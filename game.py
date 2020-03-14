@@ -15,9 +15,6 @@ class Piece(Enum):
     empty = 0
     filled = -1
     goal = -2
-    @classmethod
-    def is_not_expansible(cls,piece):
-        return piece in cls._value2member_map_
 
 class Direction(Enum):
     top = 0
@@ -25,9 +22,10 @@ class Direction(Enum):
     bottom = 2
     left = 3
     @classmethod
-    def is_not_direction(cls,dir):
-        return dir not in cls._value2member_map_
+    def is_direction(cls,dir):
+        return dir in cls._value2member_map_
 
+#-------------------------------------------------------------------
 # board - matrix of arrays
 # move - (row,column,direction)
 def execute_move(board,move):
@@ -35,7 +33,7 @@ def execute_move(board,move):
     column = move[1]
     direction = move[2]
     value = board[row][column]
-    if(Piece.is_not_expansible(value)):
+    if(value <= 0):
         return
     board[row][column] = Piece.filled.value
     if(direction is Direction.top):
@@ -94,6 +92,8 @@ def print_board(board):
 # print_board(GameBoard)
 # execute_move(GameBoard,(5,6,Direction.right))
 # print_board(GameBoard)
+
+#-------------------------------------------------------------------
 def display_game():
     
     print('\n')
@@ -116,4 +116,23 @@ def display_game():
         
 
 
-display_game()
+#display_game()
+
+#-------------------------------------------------------------------
+def validate_move(board,move):
+    max_row = len(board) - 1
+    max_col = len(board[0]) - 1
+    mov_row = move[0]
+    mov_col = move[1]
+    mov_dir = move[2]
+    return mov_row >= 0 and mov_row <= max_row \
+        and mov_col >= 0 and mov_col <= max_col \
+        and board[mov_row][mov_col] > 0 \
+        and Direction.is_direction(mov_dir)
+
+#TESTING
+# print_board(GameBoard)
+# print(str(validate_move(GameBoard,(0,0,0))))
+# print(str(validate_move(GameBoard,(20,0,0))))
+# print(str(validate_move(GameBoard,(5,6,5))))
+# print(str(validate_move(GameBoard,(5,6,1))))
