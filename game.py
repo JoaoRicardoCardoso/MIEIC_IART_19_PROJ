@@ -1,4 +1,5 @@
 from enum import Enum
+import re
 
 GameBoard = [[0,0,0,0,0,0,0,0],
              [0,0,0,0,0,0,0,0],
@@ -113,7 +114,41 @@ def display_game():
         row2 = row + list('|')
         print(row_format.format(value , *row2))
         print('   ------------------------------------')
+    
+
+def create_move(move)
+    
+def verify_input_number(arg)
+    if arg < 10 & arg >= 0:
+        return True
+    else
+        return False
+
+def verify_input_direction(arg)
+    if arg == 'R' | arg == 'L' | arg =='B' | arg =='T':
+        return True
+    else
+        return False
         
+def verify_input(arguments)
+    if verify_input_number(arguments[0]) & verify_input_number(arguments[1]) & verify_input_direction(arguments[2]):
+        create_move()
+    else
+        return False
 
+def read_move(move):
+    
+    while True:
+        moveaux = input("What's your play? (Row Column Direction:[L, R, T, B])")
+        print(moveaux)
+        arguments = moveaux.split()
 
-display_game()
+        leng = len(arguments)
+        if leng == 3:
+            if verify_input(arguments)
+                break
+        else:
+            print("Incorrect input...Try again \n")
+    
+
+read_move((5,6,Direction.right))
