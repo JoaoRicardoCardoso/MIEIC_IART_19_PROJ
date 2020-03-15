@@ -116,27 +116,43 @@ def display_game():
         print('   ------------------------------------')
     
 
-def create_move(move)
-    
-def verify_input_number(arg)
-    if arg < 10 & arg >= 0:
+def input_to_direction(value):
+    if value == 'R':
+        direction = Direction.right
+    elif value == 'L':
+        direction = Direction.left
+    elif value == 'T':
+        direction = Direction.top
+    elif value == 'B':
+        direction = Direction.bottom
+    return direction
+
+def create_move(arguments):
+    direction = input_to_direction(arguments[2]) 
+    return (arguments[0], arguments[1], direction )
+
+
+def verify_input_number(arg):
+    if int(arg) < 10 & int(arg) >= 0:
         return True
-    else
+    else:
         return False
 
-def verify_input_direction(arg)
-    if arg == 'R' | arg == 'L' | arg =='B' | arg =='T':
+def verify_input_direction(arg):
+    if (arg is "R") or (arg is "L") or (arg is "B") or (arg is "T":
         return True
-    else
+    else:
         return False
         
-def verify_input(arguments)
-    if verify_input_number(arguments[0]) & verify_input_number(arguments[1]) & verify_input_direction(arguments[2]):
-        create_move()
-    else
+def verify_input(arguments):
+    if verify_input_number(arguments[0]) \
+        & verify_input_number(arguments[1]) \
+        & verify_input_direction(arguments[2]):
+        return True
+    else:
         return False
 
-def read_move(move):
+def read_move():
     
     while True:
         moveaux = input("What's your play? (Row Column Direction:[L, R, T, B])")
@@ -145,10 +161,10 @@ def read_move(move):
 
         leng = len(arguments)
         if leng == 3:
-            if verify_input(arguments)
+            if verify_input(arguments):
                 break
         else:
             print("Incorrect input...Try again \n")
     
+    return create_move(arguments)
 
-read_move((5,6,Direction.right))
