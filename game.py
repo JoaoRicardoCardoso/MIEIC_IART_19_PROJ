@@ -139,7 +139,7 @@ def verify_input_number(arg):
         return False
 
 def verify_input_direction(arg):
-    if (arg is "R") or (arg is "L") or (arg is "B") or (arg is "T":
+    if (arg is "R") or (arg is "L") or (arg is "B") or (arg is "T"):
         return True
     else:
         return False
