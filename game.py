@@ -187,3 +187,10 @@ def validate_move(board,move):
 # print(str(validate_move(GameBoard,(20,0,0))))
 # print(str(validate_move(GameBoard,(5,6,5))))
 # print(str(validate_move(GameBoard,(5,6,1))))
+
+
+# Game():
+#     while True:
+#         display_game()
+#         move = read_move()
+#         if validate_move(move):
