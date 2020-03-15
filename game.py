@@ -99,7 +99,7 @@ def display_game():
     print('\n')
     print('                 Zhed Game    \n')
 
-    Coordenates = [0,0,1,2,3,4,5,6,'']
+    Coordenates = [0,1,2,3,4,5,6,7,'']
 
     row_format ="{:>4}" * (len(Coordenates) + 1)
     print(row_format.format("y|x", *Coordenates))
@@ -136,3 +136,29 @@ def validate_move(board,move):
 # print(str(validate_move(GameBoard,(20,0,0))))
 # print(str(validate_move(GameBoard,(5,6,5))))
 # print(str(validate_move(GameBoard,(5,6,1))))
+
+#-------------------------------------------------------------------
+def verify_game_state(board,goalsquares):
+    for goal in goalsquares:
+        if board[goal[1]][goal[0]] == Piece.filled.value:
+            return True
+    return False
+
+#TESTING
+#print_board(GameBoard)
+#print(str(verify_game_state(GameBoard,GoalSquares)))
+#needs more boards to test
+
+#-------------------------------------------------------------------
+def goal_squares(board):
+    goalsquares=[]
+    for row in range(len(board)):
+        for col in range(len(board[0])):
+            if board[row][col] == -2:
+                goalsquares.append([col,row])
+    return goalsquares
+    
+#TESTING
+#print_board(GameBoard)
+#print(str(goal_squares(GameBoard)))
+#needs more boards to test
