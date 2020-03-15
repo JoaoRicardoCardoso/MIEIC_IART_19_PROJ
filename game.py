@@ -205,7 +205,7 @@ def goal_squares(board):
     goalsquares=[]
     for row in range(len(board)):
         for col in range(len(board[0])):
-            if board[row][col] == -2:
+            if board[row][col] == Piece.goal.value:
                 goalsquares.append([col,row])
     return goalsquares
     
