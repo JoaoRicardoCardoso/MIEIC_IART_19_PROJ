@@ -51,13 +51,13 @@ def execute_move(board, move):
     if(value <= 0):
         return
     board[row][column] = Piece.filled.value
-    if(direction is Direction.top):
+    if(direction is Direction.top.value):
         execute_top(board, row, column, value)
-    elif(direction is Direction.right):
+    elif(direction is Direction.right.value):
         execute_right(board, row, column, value)
-    elif(direction is Direction.bottom):
+    elif(direction is Direction.bottom.value):
         execute_bottom(board, row, column, value)
-    elif(direction is Direction.left):
+    elif(direction is Direction.left.value):
         execute_left(board, row, column, value)
 
 
@@ -156,7 +156,7 @@ def verify_input_number(arg):
 
 
 def verify_input_direction(arg):
-    if (arg is "R") or (arg is "L") or (arg is "B") or (arg is "T"):
+    if (arg == "R") or (arg == "L") or (arg == "B") or (arg == "T"):
         return True
     else:
         return False
