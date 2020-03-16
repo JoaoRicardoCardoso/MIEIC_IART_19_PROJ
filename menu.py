@@ -98,28 +98,3 @@ def search_menu(mode, level):
         else:
             print("Invalid input. Please select a valid option.")     
 
-#-------------------------------------------------------------------
-def verify_game_state(board,goalsquares):
-    for goal in goalsquares:
-        if board[goal[1]][goal[0]] == Piece.filled.value:
-            return True
-    return False
-
-#TESTING
-#print_board(GameBoard)
-#print(str(verify_game_state(GameBoard,GoalSquares)))
-#needs more boards to test
-
-#-------------------------------------------------------------------
-def goal_squares(board):
-    goalsquares=[]
-    for row in range(len(board)):
-        for col in range(len(board[0])):
-            if board[row][col] == -2:
-                goalsquares.append([col,row])
-    return goalsquares
-    
-#TESTING
-#print_board(GameBoard)
-#print(str(goal_squares(GameBoard)))
-#needs more boards to test

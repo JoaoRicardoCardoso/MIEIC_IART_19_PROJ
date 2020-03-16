@@ -1,21 +1,33 @@
 from enum import Enum
 import re
 
-GameBoard = [[0,0,0,0,0,0,0,0],
-             [0,0,0,0,0,0,0,0],
-             [0,0,0,0,-1,-1,0,0],
-             [0,0,0,-1,-1,-1,0,0],
-             [0,0,1,0,0,-1,0,0],
-             [0,0,0,0,0,-1,3,0],
-             [0,0,-2,0,0,0,0,0],
-             [0,0,0,0,0,0,0,0]]
+GameBoard = [[0, 0, 0, 0, 0, 0, 0, 0],
+             [0, 0, 0, 0, 0, 0, 0, 0],
+             [0, 0, 0, 0, -1, -1, 0, 0],
+             [0, 0, 0, -1, -1, -1, 0, 0],
+             [0, 0, 1, 0, 0, -1, 0, 0],
+             [0, 0, 0, 0, 0, -1, 3, 0],
+             [0, 0, -2, 0, 0, 0, 0, 0],
+             [0, 0, 0, 0, 0, 0, 0, 0]]
 
-GoalSquares = [[2,6]]
+GameBoard2 = [[0, 0, 0, 0, 0, 0, 0, 0],
+             [0, 0, 0, 0, 0, 0, 0, 0],
+             [0, 0, 0, 0, 1, 2, 0, 0],
+             [0, 0, 0, 0, 0, 0, 0, 0],
+             [0, 0, 1, 0, 0, 0, 0, 0],
+             [0, 0, 0, 0, 0, 0, 3, 0],
+             [0, 0, -2, 0, 0, 0, 0, 0],
+             [0, 0, 0, 0, 0, 0, 0, 0]]
+
+
+GoalSquares = [[2, 6]]
+
 
 class Piece(Enum):
     empty = 0
     filled = -1
     goal = -2
+
 
 class Direction(Enum):
     top = 0
@@ -23,13 +35,15 @@ class Direction(Enum):
     bottom = 2
     left = 3
     @classmethod
-    def is_direction(cls,dir):
+    def is_direction(cls, dir):
         return dir in cls._value2member_map_
 
-#-------------------------------------------------------------------
+# -------------------------------------------------------------------
 # board - matrix of arrays
 # move - (row,column,direction)
-def execute_move(board,move):
+
+
+def execute_move(board, move):
     row = move[0]
     column = move[1]
     direction = move[2]
@@ -38,98 +52,100 @@ def execute_move(board,move):
         return
     board[row][column] = Piece.filled.value
     if(direction is Direction.top):
-        execute_top(board,row,column,value)
+        execute_top(board, row, column, value)
     elif(direction is Direction.right):
-        execute_right(board,row,column,value)
+        execute_right(board, row, column, value)
     elif(direction is Direction.bottom):
-        execute_bottom(board,row,column,value)
+        execute_bottom(board, row, column, value)
     elif(direction is Direction.left):
-        execute_left(board,row,column,value)
+        execute_left(board, row, column, value)
 
-def execute_top(board,row,column,value):
-    for i in range(row-1,-1,-1):
+
+def execute_top(board, row, column, value):
+    for i in range(row-1, -1, -1):
         if(value == 0):
             return
-        if(board[i][column] is Piece.empty.value 
-            or board[i][column] is Piece.goal.value):
+        if(board[i][column] is Piece.empty.value
+                or board[i][column] is Piece.goal.value):
             board[i][column] = Piece.filled.value
-            value -=1
-        
-def execute_right(board,row,column,value):
+            value -= 1
+
+
+def execute_right(board, row, column, value):
     n_cols = len(board[row])
-    for i in range(column+1,n_cols):
+    for i in range(column+1, n_cols):
         if(value == 0):
             return
-        if(board[row][i] is Piece.empty.value 
-            or board[row][i] is Piece.goal.value):
-            board[row][i] = Piece.filled.value
-            value -=1
-
-def execute_bottom(board,row,column,value):
-    n_rows = len(board)
-    for i in range(row+1,n_rows):
-        if(value == 0):
-            return
-        if(board[i][column] is Piece.empty.value 
-            or board[i][column] is Piece.goal.value):
-            board[i][column] = Piece.filled.value
-            value -=1
-
-def execute_left(board,row,column,value):
-    for i in range(column-1,-1,-1):
-            if(value == 0):
-                return
-            if(board[row][i] is Piece.empty.value 
+        if(board[row][i] is Piece.empty.value
                 or board[row][i] is Piece.goal.value):
-                board[row][i] = Piece.filled.value
-                value -=1
+            board[row][i] = Piece.filled.value
+            value -= 1
 
-def print_board(board):
-    for row in board:
-        print(row)
-    print('\n')
 
-#TESTING
+def execute_bottom(board, row, column, value):
+    n_rows = len(board)
+    for i in range(row+1, n_rows):
+        if(value == 0):
+            return
+        if(board[i][column] is Piece.empty.value
+                or board[i][column] is Piece.goal.value):
+            board[i][column] = Piece.filled.value
+            value -= 1
+
+
+def execute_left(board, row, column, value):
+    for i in range(column-1, -1, -1):
+        if(value == 0):
+            return
+        if(board[row][i] is Piece.empty.value
+                or board[row][i] is Piece.goal.value):
+            board[row][i] = Piece.filled.value
+            value -= 1
+
+# TESTING
 # print_board(GameBoard)
 # execute_move(GameBoard,(5,6,Direction.right))
 # print_board(GameBoard)
 
-#-------------------------------------------------------------------
-def display_game():
-    
+# -------------------------------------------------------------------
+
+
+def display_game(board):
+
     print('\n')
     print('                 Zhed Game    \n')
 
-    Coordenates = [0,1,2,3,4,5,6,7,'']
+    coordenates = [0, 1, 2, 3, 4, 5, 6, 7, '']
 
-    row_format ="{:>4}" * (len(Coordenates) + 1)
-    print(row_format.format("y|x", *Coordenates))
+    row_format = "{:>4}" * (len(coordenates) + 1)
+    print(row_format.format("y|x", *coordenates))
     print('   ------------------------------------')
 
-    Coords = []
-    for x in Coordenates:
-        Coords.append(str(x) +' |')
-    
-    for value, row in zip(Coords, GameBoard):
+    coords = []
+    for x in coordenates:
+        coords.append(str(x) + ' |')
+
+    for value, row in zip(coords, board):
         row2 = row + list('|')
-        print(row_format.format(value , *row2))
+        print(row_format.format(value, *row2))
         print('   ------------------------------------')
-    
+
 
 def input_to_direction(value):
     if value == 'R':
-        direction = Direction.right
+        direction = Direction.right.value
     elif value == 'L':
-        direction = Direction.left
+        direction = Direction.left.value
     elif value == 'T':
-        direction = Direction.top
+        direction = Direction.top.value
     elif value == 'B':
-        direction = Direction.bottom
+        direction = Direction.bottom.value
     return direction
 
+
 def create_move(arguments):
-    direction = input_to_direction(arguments[2]) 
-    return (arguments[0], arguments[1], direction )
+    direction = input_to_direction(arguments[2])
+    return (int(arguments[0]), int(arguments[1]), direction)
 
 
 def verify_input_number(arg):
@@ -138,24 +154,28 @@ def verify_input_number(arg):
     else:
         return False
 
+
 def verify_input_direction(arg):
     if (arg is "R") or (arg is "L") or (arg is "B") or (arg is "T"):
         return True
     else:
         return False
-        
+
+
 def verify_input(arguments):
     if verify_input_number(arguments[0]) \
         & verify_input_number(arguments[1]) \
-        & verify_input_direction(arguments[2]):
+            & verify_input_direction(arguments[2]):
         return True
     else:
         return False
 
+
 def read_move():
-    
+
     while True:
-        moveaux = input("What's your play? (Row Column Direction:[L, R, T, B])")
+        moveaux = input(
+            "What's your play? (Row Column Direction:[L, R, T, B])")
         print(moveaux)
         arguments = moveaux.split()
 
@@ -163,14 +183,18 @@ def read_move():
         if leng == 3:
             if verify_input(arguments):
                 break
+            break
         else:
             print("Incorrect input...Try again \n")
-    
-    return create_move(arguments)
-#display_game()
 
-#-------------------------------------------------------------------
-def validate_move(board,move):
+
+    return create_move(arguments)
+# display_game()
+
+# -------------------------------------------------------------------
+
+
+def validate_move(board, move):
     max_row = len(board) - 1
     max_col = len(board[0]) - 1
     mov_row = move[0]
@@ -181,41 +205,56 @@ def validate_move(board,move):
         and board[mov_row][mov_col] > 0 \
         and Direction.is_direction(mov_dir)
 
-#TESTING
+# TESTING
 # print_board(GameBoard)
 # print(str(validate_move(GameBoard,(0,0,0))))
 # print(str(validate_move(GameBoard,(20,0,0))))
 # print(str(validate_move(GameBoard,(5,6,5))))
 # print(str(validate_move(GameBoard,(5,6,1))))
 
-#-------------------------------------------------------------------
-def verify_game_state(board,goalsquares):
+# -------------------------------------------------------------------
+# True - endgame
+# False - continue
+
+
+def verify_game_state(board, goalsquares):
     for goal in goalsquares:
         if board[goal[1]][goal[0]] == Piece.filled.value:
             return True
     return False
 
-#TESTING
-#print_board(GameBoard)
-#print(str(verify_game_state(GameBoard,GoalSquares)))
-#needs more boards to test
+# TESTING
+# print_board(GameBoard)
+# print(str(verify_game_state(GameBoard,GoalSquares)))
+# needs more boards to test
 
-#-------------------------------------------------------------------
+# -------------------------------------------------------------------
+
+
 def goal_squares(board):
-    goalsquares=[]
+    goalsquares = []
     for row in range(len(board)):
         for col in range(len(board[0])):
             if board[row][col] == Piece.goal.value:
-                goalsquares.append([col,row])
+                goalsquares.append([col, row])
     return goalsquares
-    
-#TESTING
-#print_board(GameBoard)
-#print(str(goal_squares(GameBoard)))
-#needs more boards to test
 
-# Game():
-#     while True:
-#         display_game()
-#         move = read_move()
-#         if validate_move(move):
+# TESTING
+# print_board(GameBoard)
+# print(str(goal_squares(GameBoard)))
+# needs more boards to test
+
+
+def game(board):
+    goals = goal_squares(board)
+    while True:
+        display_game(board)
+        move = read_move()
+        print(move)
+        if validate_move(board,move):
+            execute_move(board, move)
+            if verify_game_state(board,goals):
+                break
+
+
+game(GameBoard2)
