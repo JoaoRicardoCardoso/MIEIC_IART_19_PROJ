@@ -245,7 +245,8 @@ def goal_squares(board):
 # needs more boards to test
 
 
-def game(board):
+def game(mode,level,option):
+    board =GameBoard2
     goals = goal_squares(board)
     while True:
         display_game(board)
@@ -257,4 +258,3 @@ def game(board):
                 break
 
 
-game(GameBoard2)
