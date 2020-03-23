@@ -110,12 +110,16 @@ def execute_left(board, row, column, value):
 # -------------------------------------------------------------------
 
 
-def display_game(board):
+def display_game(board,n):
 
+    coordenates = []
+    for x in range(0,n):
+        coordenates.append(x)
+    coordenates.append('')
     print('\n')
     print('                 Zhed Game    \n')
 
-    coordenates = [0, 1, 2, 3, 4, 5, 6, 7, '']
+    
 
     row_format = "{:>4}" * (len(coordenates) + 1)
     print(row_format.format("y|x", *coordenates))
@@ -249,7 +253,7 @@ def game(mode,level,option):
     board =GameBoard2
     goals = goal_squares(board)
     while True:
-        display_game(board)
+        display_game(board,len(board[0]))
         move = read_move()
         #print(move)
         if validate_move(board,move):
