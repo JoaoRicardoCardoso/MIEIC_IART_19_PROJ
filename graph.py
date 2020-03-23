@@ -2,12 +2,14 @@
 #https://stackoverflow.com/questions/19472530/representing-graphs-data-structure-in-python
 
 from collections import defaultdict
+from game import display_game
 
 class Node(object):
     #constructor, stores the state it represents and the parent (none by default)
-    def __init__(self, state, parent = None):
+    def __init__(self, state, parent = None, last_move = None):
         self.__state = state
         self.__parent = parent
+        self.__last_move = last_move
     
     def get_state(self):
         return self.__state
@@ -17,6 +19,9 @@ class Node(object):
     
     def get_parent(self):
         return self.__parent
+
+    def get_last_move(self):
+        return self.__last_move
 
 
 #graph class for directed graphs
@@ -41,6 +46,9 @@ class Graph(object):
         visited[start] = True
         cost = 0
         finished = False
+        if self.is_solution(start,self.goal_squares):
+            finished = True
+            self.print_path(start)
         while not finished:
             
             node = queue.pop(0)
@@ -50,8 +58,9 @@ class Graph(object):
         
             for adjacent in self.graph[node]:
                 if self.is_solution(adjacent,self.goal_squares):
+                    adjacent.set_parent(node)
                     finished = True
-                    self.print_path(node)
+                    self.__print_path(adjacent)
                 elif not visited[adjacent]:
                     adjacent.set_parent(node)
                     algorithm(adjacent,queue,visited,cost)
@@ -70,6 +79,19 @@ class Graph(object):
         parent = end.get_parent()
         while(parent is not None):
             path.insert(0,parent)
-            parent.get_parent()
+            parent = parent.get_parent()
         for node in path:
-            print(node.get_state())
+            print_board(node.get_state())
+
+#############################################################
+def print_board(board):     
+    for row in board:
+        print("|",end=" ")
+        for col in row:
+            if col < 0 or col > 10:
+                print(col, end=" ")
+            else:
+                print(" " + str(col),end=" ")
+            print("|",end=" ")
+        print("")
+    print("\n")  
