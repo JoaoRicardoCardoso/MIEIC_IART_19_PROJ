@@ -5,7 +5,7 @@ from collections import defaultdict
 
 class Node(object):
     #constructor, stores the state it represents and the parent (none by default)
-    def __init__(self,state, parent = None):
+    def __init__(self, state, parent = None):
         self.__state = state
         self.__parent = parent
     
@@ -22,10 +22,11 @@ class Node(object):
 #graph class for directed graphs
 class Graph(object):
     #constructor, stores the validation function and add edges function names
-    def __init__(self, is_solution, add_edges):
+    def __init__(self, is_solution, add_edges, goal_squares):
         self.graph = defaultdict(set)
         self.is_solution = is_solution
         self.add_edges = add_edges
+        self.goal_squares = goal_squares
 
     #function to add an edge from node1 to node2
     def add_edge(self, node1, node2):
@@ -41,14 +42,14 @@ class Graph(object):
         cost = 0
         finished = False
         while not finished:
-
+            
             node = queue.pop(0)
 
             for adjacent in self.add_edges(node):
                 self.add_edge(node,adjacent)
         
             for adjacent in self.graph[node]:
-                if self.is_solution(node):
+                if self.is_solution(adjacent,self.goal_squares):
                     finished = True
                     self.print_path(node)
                 elif not visited[adjacent]:
