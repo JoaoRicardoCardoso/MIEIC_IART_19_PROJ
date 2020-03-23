@@ -1,10 +1,4 @@
-def game(mode,level,search):
-    print("mode:")
-    print(mode)
-    print("level:")
-    print(level)
-    print("search:")
-    print(search)
+import game
 
 def main_menu():
     while True:
@@ -59,7 +53,7 @@ def level_menu(mode):
                 elif option == 5:
                     return True
                 if mode == 1:
-                    game(mode,option,-1)
+                    game.game(mode,option,-1)
                     return True
                 elif mode == 2:
                     if search_menu(mode, option):
@@ -91,10 +85,11 @@ def search_menu(mode, level):
                 elif option == 4:
                     return True
                 else:
-                    game(mode,level,option)
+                    game.game(mode,level,option)
                     return True
             else: 
                 print("Invalid input. Please select a valid option.")
         else:
             print("Invalid input. Please select a valid option.")     
 
+main_menu()

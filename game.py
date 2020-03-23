@@ -20,7 +20,7 @@ GameBoard2 = [[0, 0, 0, 0, 0, 0, 0, 0],
              [0, 0, 0, 0, 0, 0, 0, 0]]
 
 
-GoalSquares = [[2, 6]]
+GoalSquares = [[6, 2]]
 
 
 class Piece(Enum):
@@ -219,7 +219,7 @@ def validate_move(board, move):
 
 def verify_game_state(board, goalsquares):
     for goal in goalsquares:
-        if board[goal[1]][goal[0]] == Piece.filled.value:
+        if board[goal[0]][goal[1]] == Piece.filled.value:
             return True
     return False
 
@@ -236,7 +236,7 @@ def goal_squares(board):
     for row in range(len(board)):
         for col in range(len(board[0])):
             if board[row][col] == Piece.goal.value:
-                goalsquares.append([col, row])
+                goalsquares.append([row, col])
     return goalsquares
 
 # TESTING
@@ -245,7 +245,8 @@ def goal_squares(board):
 # needs more boards to test
 
 
-def game(board):
+def game(mode,level,option):
+    board =GameBoard2
     goals = goal_squares(board)
     while True:
         display_game(board)
@@ -257,4 +258,3 @@ def game(board):
                 break
 
 
-#game(GameBoard2)
