@@ -23,13 +23,13 @@ class Node(object):
 class Graph(object):
     #constructor, stores the validation function and add edges function names
     def __init__(self, is_solution, add_edges):
-        self._graph = defaultdict(set)
+        self.graph = defaultdict(set)
         self.is_solution = is_solution
         self.add_edges = add_edges
 
     #function to add an edge from node1 to node2
     def add_edge(self, node1, node2):
-        self._graph[node1].add(node2)
+        self.graph[node1].add(node2)
 
     #function to iterate the graph and find a solution 
     #given the start node and searching algorithm function
@@ -56,19 +56,19 @@ class Graph(object):
                     algorithm(adjacent,queue,visited,cost)
             cost +=1
 
-@staticmethod
-def __bfs(node, queue, visited, _):
-    queue.append(node)
-    visited[node] = True
+    @staticmethod
+    def __bfs(node, queue, visited, _):
+        queue.append(node)
+        visited[node] = True
 
-def bfs(self,start):
-    self.__run_graph(start, self.__bfs)
+    def bfs(self,start):
+        self.__run_graph(start, self.__bfs)
 
-def __print_path(self, end):
-    path = [end]
-    parent = end.get_parent()
-    while(parent is not None):
-        path.insert(0,parent)
-        parent.get_parent()
-    for node in path:
-        print(node.get_state())
+    def __print_path(self, end):
+        path = [end]
+        parent = end.get_parent()
+        while(parent is not None):
+            path.insert(0,parent)
+            parent.get_parent()
+        for node in path:
+            print(node.get_state())

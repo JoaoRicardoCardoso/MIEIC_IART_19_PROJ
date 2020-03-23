@@ -250,11 +250,11 @@ def game(board):
     while True:
         display_game(board)
         move = read_move()
-        print(move)
+        #print(move)
         if validate_move(board,move):
             execute_move(board, move)
             if verify_game_state(board,goals):
                 break
 
 
-game(GameBoard2)
+#game(GameBoard2)
