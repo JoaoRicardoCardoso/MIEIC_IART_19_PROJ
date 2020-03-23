@@ -1,65 +1,74 @@
-#first draft of graph class
-#found online, not original work
+#Graph class implemented from a existant version found at:
 #https://stackoverflow.com/questions/19472530/representing-graphs-data-structure-in-python
-#https://www.geeksforgeeks.org/generate-graph-using-dictionary-python/
-
 
 from collections import defaultdict
 
+class Node(object):
+    #constructor, stores the state it represents and the parent (none by default)
+    def __init__(self,state, parent = None):
+        self.__state = state
+        self.__parent = parent
+    
+    def get_state(self):
+        return self.__state
 
+    def set_parent(self,parent):
+        self.__parent = parent
+    
+    def get_parent(self):
+        return self.__parent
+
+
+#graph class for directed graphs
 class Graph(object):
-    """ Graph data structure, undirected by default. """
-
-    def __init__(self, connections, directed=False):
+    #constructor, stores the validation function and add edges function names
+    def __init__(self, is_solution, add_edges):
         self._graph = defaultdict(set)
-        self._directed = directed
-        self.add_connections(connections)
+        self.is_solution = is_solution
+        self.add_edges = add_edges
 
-    def add_connections(self, connections):
-        """ Add connections (list of tuple pairs) to graph """
-
-        for node1, node2 in connections:
-            self.add(node1, node2)
-
-    def add(self, node1, node2):
-        """ Add connection between node1 and node2 """
-
+    #function to add an edge from node1 to node2
+    def add_edge(self, node1, node2):
         self._graph[node1].add(node2)
-        if not self._directed:
-            self._graph[node2].add(node1)
 
-    def remove(self, node):
-        """ Remove all references to node """
+    #function to iterate the graph and find a solution 
+    #given the start node and searching algorithm function
+    def __run_graph(self, start, algorithm):
+        
+        visited = defaultdict(bool)
+        queue = [start]
+        visited[start] = True
+        cost = 0
+        finished = False
+        while not finished:
 
-        for n, cxns in self._graph.items():  # python3: items(); python2: iteritems()
-            try:
-                cxns.remove(node)
-            except KeyError:
-                pass
-        try:
-            del self._graph[node]
-        except KeyError:
-            pass
+            node = queue.pop(0)
 
-    def is_connected(self, node1, node2):
-        """ Is node1 directly connected to node2 """
+            for adjacent in self.add_edges(node):
+                self.add_edge(node,adjacent)
+        
+            for adjacent in self.graph[node]:
+                if self.is_solution(node):
+                    finished = True
+                    self.print_path(node)
+                elif not visited[adjacent]:
+                    adjacent.set_parent(node)
+                    algorithm(adjacent,queue,visited,cost)
+            cost +=1
 
-        return node1 in self._graph and node2 in self._graph[node1]
+@staticmethod
+def __bfs(node, queue, visited, _):
+    queue.append(node)
+    visited[node] = True
 
-    def find_path(self, node1, node2, path=[]):
-        """ Find any path between node1 and node2 (may not be shortest) """
+def bfs(self,start):
+    self.__run_graph(start, self.__bfs)
 
-        path = path + [node1]
-        if node1 == node2:
-            return path
-        if node1 not in self._graph:
-            return None
-        for node in self._graph[node1]:
-            if node not in path:
-                new_path = self.find_path(node, node2, path)
-                if new_path:
-                    return new_path
-        return None
-
-    def __str__(self):
-        return '{}({})'.format(self.__class__.__name__, dict(self._graph))
+def __print_path(self, end):
+    path = [end]
+    parent = end.get_parent()
+    while(parent is not None):
+        path.insert(0,parent)
+        parent.get_parent()
+    for node in path:
+        print(node.get_state())
