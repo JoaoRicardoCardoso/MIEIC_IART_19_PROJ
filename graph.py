@@ -41,6 +41,7 @@ class Graph(object):
     #given the start node and searching algorithm function
     def __run_graph(self, start, algorithm):
         
+        limit = 2
         visited = defaultdict(bool)
         queue = [start]
         visited[start] = True
@@ -63,13 +64,34 @@ class Graph(object):
                     self.__print_path(adjacent)
                 elif not visited[adjacent]:
                     adjacent.set_parent(node)
-                    algorithm(adjacent,queue,visited,cost)
+                    algorithm(adjacent,queue,visited,cost,limit)
             cost +=1
+            limit -=1
 
     @staticmethod
-    def __bfs(node, queue, visited, _):
+    def __bfs(node, queue, visited, _,__):
         queue.append(node)
         visited[node] = True
+
+    @staticmethod
+    def __dfs(node, queue, visited, _,__):
+        queue.insert(0,node)
+        visited[node] = True
+
+    @staticmethod
+    def __ids(node, queue, visited, _,limit):
+        if limit == 0:
+            queue.append(node)
+        else:
+            queue.insert(0,node)
+
+        visited[node] = True
+        
+    def dfs(self,start):
+        self.__run_graph(start, self.__dfs)
+        
+    def ids(self,start):
+        self.__run_graph(start, self.__ids)
 
     def bfs(self,start):
         self.__run_graph(start, self.__bfs)

@@ -43,20 +43,20 @@ def get_all_nodes(node):
 
 #TESTING
 ########################################################
-GameBoard2 = [[0, 0, 0, 0, 0, 0, 0, 0],
-             [0, 0, 0, 0, 0, 0, 0, 0],
-             [0, 0, 0, 0, 0, 2, 0, 0],
-             [0, 0, 0, 0, 0, 0, 1, 0],
-             [0, 0, 1, 0, 0, 0, 0, 0],
-             [0, 0, 0, 0, 0, 0, 3, 0],
-             [0, 0, -2, 0, 0, 0, 0, 0],
-             [0, 0, 0, 0, 0, 0, 0, 0]]
+# GameBoard2 = [[0, 0, 0, 0, 0, 0, 0, 0],
+#              [0, 0, 0, 0, 0, 0, 0, 0],
+#              [0, 0, 0, 0, 0, 2, 0, 0],
+#              [0, 0, 0, 0, 0, 0, 1, 0],
+#              [0, 0, 1, 0, 0, 0, 0, 0],
+#              [0, 0, 0, 0, 0, 0, 3, 0],
+#              [0, 0, -2, 0, 0, 0, 0, 0],
+#              [0, 0, 0, 0, 0, 0, 0, 0]]
 
 
-GoalSquares = goal_squares(GameBoard2)
+# GoalSquares = goal_squares(GameBoard2)
 
-options = {
-    "bfs": lambda graph: graph.bfs(Node(GameBoard2))
-}
+# options = {
+#     "bfs": lambda graph: graph.bfs(Node(GameBoard2))
+# }
 
-options["bfs"](Graph(is_solution,get_all_nodes,GoalSquares))
+# options["bfs"](Graph(is_solution,get_all_nodes,GoalSquares))

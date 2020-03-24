@@ -109,7 +109,7 @@ def execute_left(board, row, column, value):
 
 # -------------------------------------------------------------------
 
-
+    
 def display_game(board,n):
 
     coordenates = []

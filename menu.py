@@ -1,4 +1,16 @@
 import game
+import graph_functions
+from graph import Node, Graph
+
+GameBoard2 = [[0, 0, 0, 0, 0, 0, 0, 0],
+             [0, 0, 0, 0, 0, 0, 0, 0],
+             [0, 0, 0, 0, 0, 2, 0, 0],
+             [0, 0, 0, 0, 0, 0, 1, 0],
+             [0, 0, 1, 0, 0, 0, 0, 0],
+             [0, 0, 0, 0, 0, 0, 3, 0],
+             [0, 0, -2, 0, 0, 0, 0, 0],
+             [0, 0, 0, 0, 0, 0, 0, 0]]
+
 
 def main_menu():
     while True:
@@ -20,10 +32,11 @@ def main_menu():
                     return
                 if level_menu(option):
                     return
-            else: 
+            else:
                 print("Invalid input. Please select a valid option.")
         else:
-            print("Invalid input. Please select a valid option.")        
+            print("Invalid input. Please select a valid option.")
+
 
 def level_menu(mode):
     while True:
@@ -53,15 +66,16 @@ def level_menu(mode):
                 elif option == 5:
                     return True
                 if mode == 1:
-                    game.game(mode,option,-1)
+                    game.game(mode, option, -1)
                     return True
                 elif mode == 2:
                     if search_menu(mode, option):
                         return True
-            else: 
+            else:
                 print("Invalid input. Please select a valid option.")
         else:
-            print("Invalid input. Please select a valid option.")     
+            print("Invalid input. Please select a valid option.")
+
 
 def search_menu(mode, level):
     while True:
@@ -85,7 +99,16 @@ def search_menu(mode, level):
                 elif option == 4:
                     return True
                 else:
-                    game.game(mode,level,option)
+                    if mode == 2:
+                        goalSquares = game.goal_squares(GameBoard2)
+                        options = {
+                            "bfs": lambda graph: graph.bfs(Node(GameBoard2)),
+                            "ids": lambda graph: graph.ids(Node(GameBoard2)),
+                            "dfs": lambda graph: graph.dfs(Node(GameBoard2))
+                        }
+                        options["ids"](Graph(graph_functions.is_solution, graph_functions.get_all_nodes, goalSquares))
+                    elif mode == 1:
+                        game.game(mode, level, option)
                     return True
             else: 
                 print("Invalid input. Please select a valid option.")
