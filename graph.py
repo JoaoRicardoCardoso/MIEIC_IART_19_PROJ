@@ -2,7 +2,7 @@
 #https://stackoverflow.com/questions/19472530/representing-graphs-data-structure-in-python
 
 from collections import defaultdict
-from game import display_game
+from game import display_game, print_board_2
 
 class Node(object):
     #constructor, stores the state it represents and the parent (none by default)
@@ -103,9 +103,10 @@ class Graph(object):
             path.insert(0,parent)
             parent = parent.get_parent()
         for node in path:
-            print_board(node.get_state())
+            print_board_2(node.get_state(),node.get_last_move())
 
 #############################################################
+
 def print_board(board):     
     for row in board:
         print("|",end=" ")

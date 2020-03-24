@@ -1,5 +1,8 @@
 from enum import Enum
 import re
+import sys
+import time
+import itertools
 
 GameBoard = [[0, 0, 0, 0, 0, 0, 0, 0],
              [0, 0, 0, 0, 0, 0, 0, 0],
@@ -37,6 +40,16 @@ class Direction(Enum):
     @classmethod
     def is_direction(cls, dir):
         return dir in cls._value2member_map_
+   
+def convert_direction(dir):
+        if dir  == 0:
+            return "top"
+        elif dir ==1:
+            return "right"
+        elif dir == 2:
+            return "bottom"
+        elif dir ==3:
+            return "left"
 
 # -------------------------------------------------------------------
 # board - matrix of arrays
@@ -262,3 +275,18 @@ def game(mode,level,option):
                 break
 
 
+
+def delete_board_screen(n):
+    for _ in itertools.repeat(None, 3*n -2):
+        sys.stdout.write("\033[F") 
+        sys.stdout.write("\033[K") 
+
+def print_move(last_move):
+    print("Coordenates: (" + str(last_move[0]) + "," + str(last_move[1]) + ")" + " Direction: " + convert_direction(last_move[2]))
+
+def print_board_2(board,last_move):
+    if last_move != None:
+        print_move(last_move)
+    display_game(board,len(board))
+    time.sleep(2)
+    delete_board_screen(len(board))
