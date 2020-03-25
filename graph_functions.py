@@ -40,7 +40,6 @@ def get_all_nodes(node):
     
     return nodes
 
-
 #TESTING
 ########################################################
 GameBoard2 = [[0, 0, 0, 0, 0, 0, 0, 0],
@@ -56,7 +55,7 @@ GameBoard2 = [[0, 0, 0, 0, 0, 0, 0, 0],
 GoalSquares = goal_squares(GameBoard2)
 
 options = {
-    "bfs": lambda graph: graph.bfs(Node(GameBoard2))
+    "greedy": lambda graph: graph.greedy(Node(GameBoard2))
 }
 
-options["bfs"](Graph(is_solution,get_all_nodes,GoalSquares))
+options["greedy"](Graph(is_solution,get_all_nodes,GoalSquares))
