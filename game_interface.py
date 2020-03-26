@@ -29,7 +29,11 @@ def display_board(board,n):
 
     row_format = "{:>4}" * (len(coordenates) + 1)
     print(row_format.format("y|x", *coordenates))
-    print('   ------------------------------------')
+    print('   ', end = '')
+    for _ in itertools.repeat(None, n):
+        print('----', end = '')
+    print('----')
+
 
     coords = []
     for x in coordenates:
@@ -38,7 +42,10 @@ def display_board(board,n):
     for value, row in zip(coords, board):
         row2 = row + list('|')
         print(row_format.format(value, *row2))
-        print('   ------------------------------------')
+        print('   ', end = '')
+        for _ in itertools.repeat(None, n):
+            print('----', end = '')
+        print('----')
 
 
 
