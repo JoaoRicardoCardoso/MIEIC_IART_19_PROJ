@@ -6,36 +6,13 @@ from game import display_game
 import heapq
 import math as m
 
-def distance_to_goals(row,col):
-    from graph_functions import GoalSquares
-    distance = 0.0
-    for goal in GoalSquares:
-        distance = distance + m.sqrt((row-goal[0])*(row-goal[0])+(col-goal[1])*(col-goal[1]))
-    return distance
-
-def heuristic(board):
-    expandables=[]
-
-    #fill list with all expandable squares
-    for row in range(len(board)):
-        for col in range(len(board[0])):
-            if board[row][col] > 0:
-                distance = distance_to_goals(row,col)
-                expandables.append((distance,row,col))
-    
-    #get the biggest distance (O(n) complexity)
-    max = 0
-    for square in expandables:
-        if square[0] > max:
-            max = square[0]
-    return max
-
 class Node(object):
     #constructor, stores the state it represents and the parent (none by default)
-    def __init__(self, state, parent = None, last_move = None):
+    def __init__(self, state, goal_squares, parent = None, last_move = None):
         self.__state = state
         self.__parent = parent
         self.__last_move = last_move
+        self.__goal_squares = goal_squares
     
     def get_state(self):
         return self.__state
@@ -48,9 +25,32 @@ class Node(object):
 
     def get_last_move(self):
         return self.__last_move
+
+    def distance_to_goals(self,row,col):
+        distance = 0.0
+        for goal in self.__goal_squares:
+            distance = distance + m.sqrt((row-goal[0])*(row-goal[0])+(col-goal[1])*(col-goal[1]))
+        return distance
+
+    def heuristic(self,board):
+        expandables=[]
+
+        #fill list with all expandable squares
+        for row in range(len(board)):
+            for col in range(len(board[0])):
+                if board[row][col] > 0:
+                    distance = self.distance_to_goals(row,col)
+                    expandables.append((distance,row,col))
+        
+        #get the biggest distance (O(n) complexity)
+        max = 0
+        for square in expandables:
+            if square[0] > max:
+                max = square[0]
+        return max
     
     def __lt__(self, other):
-        return heuristic(self.__state) < heuristic(other.get_state())
+        return self.heuristic(self.__state) < self.heuristic(other.get_state())
 
 
 #graph class for directed graphs
@@ -69,10 +69,10 @@ class Graph(object):
     #function to iterate the graph and find a solution 
     #given the start node and searching algorithm function
     def __run_graph(self, start, algorithm):
-        
+
         visited = defaultdict(bool)
         queue = [start]
-        heapq.heapify(queue)
+        #heapq.heapify(queue)
         visited[start] = True
         cost = 0
         finished = False
@@ -80,9 +80,8 @@ class Graph(object):
             finished = True
             self.print_path(start)
         while not finished:
-            
-            node = heapq.heappop(queue)
 
+            node = heapq.heappop(queue)
             for adjacent in self.add_edges(node):
                 self.add_edge(node,adjacent)
         
@@ -97,9 +96,17 @@ class Graph(object):
             cost +=1
 
     @staticmethod
+    def __bfs(node, queue, visited, _):
+        queue.append(node)
+        visited[node] = True
+    
+    @staticmethod
     def __greedy(node, queue, visited, _):
         heapq.heappush(queue,node)
         visited[node] = True
+
+    def bfs(self,start):
+        self.__run_graph(start, self.__bfs)
 
     def greedy(self,start):
         self.__run_graph(start, self.__greedy)
@@ -124,4 +131,4 @@ def print_board(board):
                 print(" " + str(col),end=" ")
             print("|",end=" ")
         print("")
-    print("\n") 
+    print("\n")

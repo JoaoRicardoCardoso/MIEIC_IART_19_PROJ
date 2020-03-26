@@ -36,7 +36,7 @@ def get_all_nodes(node):
 
     #create node for each board possible (each state)
     for board_state in newstates:
-        nodes.append(Node(board_state[0],None,board_state[1]))
+        nodes.append(Node(board_state[0],GoalSquares,None,board_state[1]))
     
     return nodes
 
@@ -55,7 +55,11 @@ GameBoard2 = [[0, 0, 0, 0, 0, 0, 0, 0],
 GoalSquares = goal_squares(GameBoard2)
 
 options = {
-    "greedy": lambda graph: graph.greedy(Node(GameBoard2))
+    "bfs": lambda graph: graph.bfs(Node(GameBoard2,GoalSquares)),
+    "greedy": lambda graph: graph.greedy(Node(GameBoard2,GoalSquares))
 }
 
+print("bfs")
+options["bfs"](Graph(is_solution,get_all_nodes,GoalSquares))
+print("greedy")
 options["greedy"](Graph(is_solution,get_all_nodes,GoalSquares))
