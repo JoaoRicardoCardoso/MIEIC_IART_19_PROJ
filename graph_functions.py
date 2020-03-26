@@ -1,4 +1,4 @@
-from game import Direction, display_game, execute_move, goal_squares, validate_move, verify_game_state
+from game import Direction, execute_move, goal_squares, validate_move, verify_game_state
 from graph import Graph, Node
 import copy
 

@@ -2,7 +2,8 @@
 #https://stackoverflow.com/questions/19472530/representing-graphs-data-structure-in-python
 
 from collections import defaultdict
-from game import display_game, print_board_2
+from game_interface import display_board, print_board_2, print_board
+from game import convert_direction
 
 class Node(object):
     #constructor, stores the state it represents and the parent (none by default)
@@ -37,6 +38,17 @@ class Graph(object):
     def add_edge(self, node1, node2):
         self.graph[node1].add(node2)
 
+    def print_path(self, end):
+        path = [end]
+        parent = end.get_parent()
+        while(parent is not None):
+            path.insert(0,parent)
+            parent = parent.get_parent()
+        for node in path:
+            last_move = node.get_last_move()
+            if last_move != None:
+                print_board_2(node.get_state(),last_move[0],last_move[1],convert_direction(last_move[2]))
+            
     #function to iterate the graph and find a solution 
     #given the start node and searching algorithm function
     def __run_graph(self, start, algorithm):
@@ -61,13 +73,14 @@ class Graph(object):
                 if self.is_solution(adjacent,self.goal_squares):
                     adjacent.set_parent(node)
                     finished = True
-                    self.__print_path(adjacent)
+                    self.print_path(adjacent)
                 elif not visited[adjacent]:
                     adjacent.set_parent(node)
                     algorithm(adjacent,queue,visited,cost,limit)
             cost +=1
             limit -=1
 
+            
     @staticmethod
     def __bfs(node, queue, visited, _,__):
         queue.append(node)
@@ -96,25 +109,5 @@ class Graph(object):
     def bfs(self,start):
         self.__run_graph(start, self.__bfs)
 
-    def __print_path(self, end):
-        path = [end]
-        parent = end.get_parent()
-        while(parent is not None):
-            path.insert(0,parent)
-            parent = parent.get_parent()
-        for node in path:
-            print_board_2(node.get_state(),node.get_last_move())
 
 #############################################################
-
-def print_board(board):     
-    for row in board:
-        print("|",end=" ")
-        for col in row:
-            if col < 0 or col > 10:
-                print(col, end=" ")
-            else:
-                print(" " + str(col),end=" ")
-            print("|",end=" ")
-        print("")
-    print("\n")  

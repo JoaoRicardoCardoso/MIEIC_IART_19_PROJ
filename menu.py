@@ -1,16 +1,7 @@
-import game
-import graph_functions
 from graph import Node, Graph
-
-GameBoard2 = [[0, 0, 0, 0, 0, 0, 0, 0],
-             [0, 0, 0, 0, 0, 0, 0, 0],
-             [0, 0, 0, 0, 0, 2, 0, 0],
-             [0, 0, 0, 0, 0, 0, 1, 0],
-             [0, 0, 1, 0, 0, 0, 0, 0],
-             [0, 0, 0, 0, 0, 0, 3, 0],
-             [0, 0, -2, 0, 0, 0, 0, 0],
-             [0, 0, 0, 0, 0, 0, 0, 0]]
-
+from game import goal_squares,game
+from gameboards import GameBoard1,GameBoard2,GameBoard3,GameBoard4
+from graph_functions import is_solution, get_all_nodes
 
 def main_menu():
     while True:
@@ -26,7 +17,6 @@ def main_menu():
         option = input("Choose an option: ")
         if len(option) == 1:
             if ord(option) >= 49 and ord(option) <= 51:
-                valid_input = True
                 option = int(option)
                 if option == 3:
                     return
@@ -59,14 +49,13 @@ def level_menu(mode):
         option = input("Choose an option: ")
         if len(option) == 1:
             if ord(option) >= 49 and ord(option) <= 53:
-                valid_input = True
                 option = int(option)
                 if option == 4:
                     return False
                 elif option == 5:
                     return True
                 if mode == 1:
-                    game.game(mode, option, -1)
+                    game(mode, option, -1)
                     return True
                 elif mode == 2:
                     if search_menu(mode, option):
@@ -76,8 +65,18 @@ def level_menu(mode):
         else:
             print("Invalid input. Please select a valid option.")
 
+def switch_level(argument):
+    switcher = {
+        1: GameBoard1,
+        2: GameBoard2,
+        3: GameBoard4
+    }
+    return switcher.get(argument)
 
 def search_menu(mode, level):
+    
+    board = switch_level(level)
+
     while True:
 
         print()
@@ -92,7 +91,6 @@ def search_menu(mode, level):
         option = input("Choose an option: ")
         if len(option) == 1:
             if ord(option) >= 49 and ord(option) <= 52:
-                valid_input = True
                 option = int(option)
                 if option == 3:
                     return False
@@ -100,15 +98,15 @@ def search_menu(mode, level):
                     return True
                 else:
                     if mode == 2:
-                        goalSquares = game.goal_squares(GameBoard2)
+                        goalSquares = goal_squares(board)
                         options = {
-                            "bfs": lambda graph: graph.bfs(Node(GameBoard2)),
-                            "ids": lambda graph: graph.ids(Node(GameBoard2)),
-                            "dfs": lambda graph: graph.dfs(Node(GameBoard2))
+                            "bfs": lambda graph: graph.bfs(Node(board)),
+                            "ids": lambda graph: graph.ids(Node(board)),
+                            "dfs": lambda graph: graph.dfs(Node(board))
                         }
-                        options["ids"](Graph(graph_functions.is_solution, graph_functions.get_all_nodes, goalSquares))
+                        options["bfs"](Graph(is_solution, get_all_nodes, goalSquares))
                     elif mode == 1:
-                        game.game(mode, level, option)
+                        game(mode, board, option)
                     return True
             else: 
                 print("Invalid input. Please select a valid option.")

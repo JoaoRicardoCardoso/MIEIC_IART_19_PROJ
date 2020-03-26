@@ -1,30 +1,7 @@
-from enum import Enum
 import re
-import sys
-import time
-import itertools
-
-GameBoard = [[0, 0, 0, 0, 0, 0, 0, 0],
-             [0, 0, 0, 0, 0, 0, 0, 0],
-             [0, 0, 0, 0, -1, -1, 0, 0],
-             [0, 0, 0, -1, -1, -1, 0, 0],
-             [0, 0, 1, 0, 0, -1, 0, 0],
-             [0, 0, 0, 0, 0, -1, 3, 0],
-             [0, 0, -2, 0, 0, 0, 0, 0],
-             [0, 0, 0, 0, 0, 0, 0, 0]]
-
-GameBoard2 = [[0, 0, 0, 0, 0, 0, 0, 0],
-             [0, 0, 0, 0, 0, 0, 0, 0],
-             [0, 0, 0, 0, 1, 2, 0, 0],
-             [0, 0, 0, 0, 0, 0, 0, 0],
-             [0, 0, 1, 0, 0, 0, 0, 0],
-             [0, 0, 0, 0, 0, 0, 3, 0],
-             [0, 0, -2, 0, 0, 0, 0, 0],
-             [0, 0, 0, 0, 0, 0, 0, 0]]
-
-
-GoalSquares = [[6, 2]]
-
+import gameboards
+from game_interface import display_board
+from enum import Enum
 
 class Piece(Enum):
     empty = 0
@@ -37,6 +14,7 @@ class Direction(Enum):
     right = 1
     bottom = 2
     left = 3
+    
     @classmethod
     def is_direction(cls, dir):
         return dir in cls._value2member_map_
@@ -54,7 +32,6 @@ def convert_direction(dir):
 # -------------------------------------------------------------------
 # board - matrix of arrays
 # move - (row,column,direction)
-
 
 def execute_move(board, move):
     row = move[0]
@@ -122,31 +99,6 @@ def execute_left(board, row, column, value):
 
 # -------------------------------------------------------------------
 
-    
-def display_game(board,n):
-
-    coordenates = []
-    for x in range(0,n):
-        coordenates.append(x)
-    coordenates.append('')
-    print('\n')
-    print('                 Zhed Game    \n')
-
-    
-
-    row_format = "{:>4}" * (len(coordenates) + 1)
-    print(row_format.format("y|x", *coordenates))
-    print('   ------------------------------------')
-
-    coords = []
-    for x in coordenates:
-        coords.append(str(x) + ' |')
-
-    for value, row in zip(coords, board):
-        row2 = row + list('|')
-        print(row_format.format(value, *row2))
-        print('   ------------------------------------')
-
 
 def input_to_direction(value):
     if value == 'R':
@@ -187,26 +139,6 @@ def verify_input(arguments):
     else:
         return False
 
-
-def read_move():
-
-    while True:
-        moveaux = input(
-            "What's your play? (Row Column Direction:[L, R, T, B])")
-        print(moveaux)
-        arguments = moveaux.split()
-
-        leng = len(arguments)
-        if leng == 3:
-            if verify_input(arguments):
-                break
-            break
-        else:
-            print("Incorrect input...Try again \n")
-
-
-    return create_move(arguments)
-# display_game()
 
 # -------------------------------------------------------------------
 
@@ -261,32 +193,32 @@ def goal_squares(board):
 # print(str(goal_squares(GameBoard)))
 # needs more boards to test
 
-
-def game(mode,level,option):
-    board =GameBoard2
+def game(mode,board,option):
     goals = goal_squares(board)
     while True:
-        display_game(board,len(board[0]))
+        display_board(board,len(board[0]))
         move = read_move()
-        #print(move)
         if validate_move(board,move):
             execute_move(board, move)
             if verify_game_state(board,goals):
                 break
 
+def read_move():
+
+    while True:
+        moveaux = input(
+            "What's your play? (Row Column Direction:[L, R, T, B])")
+        print(moveaux)
+        arguments = moveaux.split()
+
+        leng = len(arguments)
+        if leng == 3:
+            if verify_input(arguments):
+                break
+            break
+        else:
+            print("Incorrect input...Try again \n")
 
 
-def delete_board_screen(n):
-    for _ in itertools.repeat(None, 3*n -2):
-        sys.stdout.write("\033[F") 
-        sys.stdout.write("\033[K") 
+    return create_move(arguments)
 
-def print_move(last_move):
-    print("Coordenates: (" + str(last_move[0]) + "," + str(last_move[1]) + ")" + " Direction: " + convert_direction(last_move[2]))
-
-def print_board_2(board,last_move):
-    if last_move != None:
-        print_move(last_move)
-    display_game(board,len(board))
-    time.sleep(2)
-    delete_board_screen(len(board))
