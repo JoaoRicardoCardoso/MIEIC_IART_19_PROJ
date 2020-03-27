@@ -3,8 +3,8 @@
 
 from collections import defaultdict
 from game import display_game
+from heuristics import *
 import heapq
-import math as m
 
 class Node(object):
     #constructor, stores the state it represents and the parent (none by default)
@@ -13,6 +13,7 @@ class Node(object):
         self.__parent = parent
         self.__last_move = last_move
         self.__goal_squares = goal_squares
+        self.heuristic = heuristic
     
     def get_state(self):
         return self.__state
@@ -25,32 +26,9 @@ class Node(object):
 
     def get_last_move(self):
         return self.__last_move
-
-    def distance_to_goals(self,row,col):
-        distance = 0.0
-        for goal in self.__goal_squares:
-            distance = distance + m.sqrt((row-goal[0])*(row-goal[0])+(col-goal[1])*(col-goal[1]))
-        return distance
-
-    def heuristic(self,board):
-        expandables=[]
-
-        #fill list with all expandable squares
-        for row in range(len(board)):
-            for col in range(len(board[0])):
-                if board[row][col] > 0:
-                    distance = self.distance_to_goals(row,col)
-                    expandables.append((distance,row,col))
-        
-        #get the biggest distance (O(n) complexity)
-        max = 0
-        for square in expandables:
-            if square[0] > max:
-                max = square[0]
-        return max
     
     def __lt__(self, other):
-        return self.heuristic(self.__state) < self.heuristic(other.get_state())
+        return self.heuristic(self.__state,self.__goal_squares) < self.heuristic(other.get_state(),self.__goal_squares)
 
 
 #graph class for directed graphs
@@ -72,7 +50,7 @@ class Graph(object):
 
         visited = defaultdict(bool)
         queue = [start]
-        #heapq.heapify(queue)
+        heapq.heapify(queue)
         visited[start] = True
         cost = 0
         finished = False

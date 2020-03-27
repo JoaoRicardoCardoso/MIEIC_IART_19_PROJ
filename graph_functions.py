@@ -59,7 +59,5 @@ options = {
     "greedy": lambda graph: graph.greedy(Node(GameBoard2,GoalSquares))
 }
 
-print("bfs")
-options["bfs"](Graph(is_solution,get_all_nodes,GoalSquares))
-print("greedy")
+#options["bfs"](Graph(is_solution,get_all_nodes,GoalSquares))
 options["greedy"](Graph(is_solution,get_all_nodes,GoalSquares))
