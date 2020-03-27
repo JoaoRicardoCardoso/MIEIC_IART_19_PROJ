@@ -66,7 +66,7 @@ class Graph(object):
 
         visited = defaultdict(bool)
         queue = [start]
-        #heapq.heapify(queue)
+        heapq.heapify(queue)
         visited[start] = True
         cost = 0
         finished = False
@@ -76,8 +76,8 @@ class Graph(object):
             self.print_path(start)
         while not finished:
 
-            node = queue.pop(0)
-            #node = heapq.heappop(queue)
+            # node = queue.pop(0)
+            node = heapq.heappop(queue)
             for adjacent in self.add_edges(node,self.goal_squares):
                 self.add_edge(node,adjacent)
         
@@ -105,7 +105,7 @@ class Graph(object):
         visited[node] = True
     
     @staticmethod
-    def __greedy(node, queue, visited, _):
+    def __greedy(node, queue, visited, _,__,___,____):
         heapq.heappush(queue,node)
         visited[node] = True
 

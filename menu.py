@@ -106,7 +106,7 @@ def search_menu(mode, level):
                                 "greedy": lambda graph: graph.greedy(Node(board,goalSquares))
                         
                         }
-                        options["bfs"](Graph(is_solution, get_all_nodes, goalSquares))
+                        options["greedy"](Graph(is_solution, get_all_nodes, goalSquares))
                     elif mode == 1:
                         game(mode, board, option)
                     return True
