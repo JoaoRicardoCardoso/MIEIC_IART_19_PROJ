@@ -27,9 +27,20 @@ class Node(object):
 
     def get_last_move(self):
         return self.__last_move
+
+    def get_goal_squares(self):
+        return(self.__goal_squares)
+
+    def get_cost(self):
+        if self.__parent == None:
+            return 0
+        else:
+            return self.__parent.get_cost()+1
     
     def __lt__(self, other):
-        return self.heuristic(self.__state,self.__goal_squares) < self.heuristic(other.get_state(),self.__goal_squares)
+        #return (self.heuristic(self.__state,self.goal_squares)+self.get_cost()) < (other.heuristic(other.get_state(),self.goal_squares)+other.get_cost())
+        return (self.heuristic(self.__state,self.__goal_squares)) < (other.heuristic(other.get_state(),self.__goal_squares))
+        #return (self.get_cost()) < (other.get_cost())
 
 
 #graph class for directed graphs
@@ -68,16 +79,18 @@ class Graph(object):
         queue = [start]
         heapq.heapify(queue)
         visited[start] = True
-        cost = 0
         finished = False
 
         if self.is_solution(start,self.goal_squares):
             finished = True
             self.print_path(start)
         while not finished:
-
             # node = queue.pop(0)
             node = heapq.heappop(queue)
+            display_board(node.get_state(),len(node.get_state()))
+            print("Cost: " + str(node.get_cost()) + "  " + "Heuristic: " + str(node.heuristic(node.get_state(),node.get_goal_squares())))
+            print("Total node cost: " + str(node.get_cost() + node.heuristic(node.get_state(),node.get_goal_squares())))
+            input()
             for adjacent in self.add_edges(node,self.goal_squares):
                 self.add_edge(node,adjacent)
         
@@ -88,8 +101,7 @@ class Graph(object):
                     self.print_path(adjacent)
                 elif not visited[adjacent]:
                     adjacent.set_parent(node)
-                    algorithm(adjacent,queue,visited,cost,limit,n_tries,finished)
-            cost +=1
+                    algorithm(adjacent,queue,visited,limit,n_tries,finished)
 
             if limit <= 0:
                 limit = initial_limit
@@ -100,17 +112,17 @@ class Graph(object):
 
             
     @staticmethod
-    def __bfs(node, queue, visited, _,__,___,_____):
+    def __bfs(node, queue, visited,_,__,___):
         queue.append(node)
         visited[node] = True
     
     @staticmethod
-    def __greedy(node, queue, visited, _,__,___,____):
+    def __greedy(node, queue, visited,_,__,___):
         heapq.heappush(queue,node)
         visited[node] = True
 
     @staticmethod
-    def __dfs(node, queue, visited, _,__,___,_____):
+    def __dfs(node, queue, visited,_,__,___):
         queue.insert(0,node)
         visited[node] = True
 
