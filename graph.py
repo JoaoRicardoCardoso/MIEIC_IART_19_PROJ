@@ -9,12 +9,13 @@ import heapq
 
 class Node(object):
     #constructor, stores the state it represents and the parent (none by default)
-    def __init__(self, state, goal_squares, parent = None, last_move = None):
+    def __init__(self, state, goal_squares, uses_cost, parent = None, last_move = None):
         self.__state = state
         self.__parent = parent
         self.__last_move = last_move
         self.__goal_squares = goal_squares
         self.heuristic = heuristic
+        self.__uses_cost = uses_cost
     
     def get_state(self):
         return self.__state
@@ -29,7 +30,10 @@ class Node(object):
         return self.__last_move
 
     def get_goal_squares(self):
-        return(self.__goal_squares)
+        return self.__goal_squares
+    
+    def get_uses_cost(self):
+        return self.__uses_cost
 
     def get_cost(self):
         if self.__parent == None:
@@ -38,19 +42,22 @@ class Node(object):
             return self.__parent.get_cost()+1
     
     def __lt__(self, other):
-        #return (self.heuristic(self.__state,self.goal_squares)+self.get_cost()) < (other.heuristic(other.get_state(),self.goal_squares)+other.get_cost())
-        return (self.heuristic(self.__state,self.__goal_squares)) < (other.heuristic(other.get_state(),self.__goal_squares))
+        if self.__uses_cost:
+            return (self.heuristic(self.__state,self.__goal_squares)+self.get_cost()) < (other.heuristic(other.get_state(),self.__goal_squares)+other.get_cost())
+        else:
+            return (self.heuristic(self.__state,self.__goal_squares)) < (other.heuristic(other.get_state(),self.__goal_squares))
         #return (self.get_cost()) < (other.get_cost())
 
 
 #graph class for directed graphs
 class Graph(object):
     #constructor, stores the validation function and add edges function names
-    def __init__(self, is_solution, add_edges, goal_squares):
+    def __init__(self, is_solution, add_edges, goal_squares,informed):
         self.graph = defaultdict(set)
         self.is_solution = is_solution
         self.add_edges = add_edges
         self.goal_squares = goal_squares
+        self.informed = informed
 
     #function to add an edge from node1 to node2
     def add_edge(self, node1, node2):
@@ -77,7 +84,8 @@ class Graph(object):
 
         visited = defaultdict(bool)
         queue = [start]
-        heapq.heapify(queue)
+        if self.informed:
+            heapq.heapify(queue)
         visited[start] = True
         finished = False
 
@@ -85,12 +93,16 @@ class Graph(object):
             finished = True
             self.print_path(start)
         while not finished:
-            # node = queue.pop(0)
-            node = heapq.heappop(queue)
-            display_board(node.get_state(),len(node.get_state()))
-            print("Cost: " + str(node.get_cost()) + "  " + "Heuristic: " + str(node.heuristic(node.get_state(),node.get_goal_squares())))
-            print("Total node cost: " + str(node.get_cost() + node.heuristic(node.get_state(),node.get_goal_squares())))
-            input()
+
+            if self.informed:
+                node = heapq.heappop(queue)
+            else:
+                node = queue.pop(0)
+            
+            #display_board(node.get_state(),len(node.get_state()))
+            #print("Cost: " + str(node.get_cost()) + "  " + "Heuristic: " + str(node.heuristic(node.get_state(),node.get_goal_squares())))
+            #print("Total node cost: " + str(node.get_cost() + node.heuristic(node.get_state(),node.get_goal_squares())))
+            #input()
             for adjacent in self.add_edges(node,self.goal_squares):
                 self.add_edge(node,adjacent)
         
@@ -98,7 +110,7 @@ class Graph(object):
                 if self.is_solution(adjacent,self.goal_squares):
                     adjacent.set_parent(node)
                     finished = True
-                    self.print_path(adjacent)
+                    #self.print_path(adjacent)
                 elif not visited[adjacent]:
                     adjacent.set_parent(node)
                     algorithm(adjacent,queue,visited,limit,n_tries,finished)
@@ -117,7 +129,7 @@ class Graph(object):
         visited[node] = True
     
     @staticmethod
-    def __greedy(node, queue, visited,_,__,___):
+    def __informed_search(node, queue, visited,_,__,___):
         heapq.heappush(queue,node)
         visited[node] = True
 
@@ -147,8 +159,8 @@ class Graph(object):
     def bfs(self,start):
         self.__run_graph(start, self.__bfs)
 
-    def greedy(self,start):
-        self.__run_graph(start, self.__greedy)
+    def informed_search(self,start):
+        self.__run_graph(start, self.__informed_search)
 
     def __print_path(self, end):
         path = [end]

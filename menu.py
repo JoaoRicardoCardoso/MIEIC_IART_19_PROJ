@@ -100,11 +100,11 @@ def search_menu(mode, level):
                     if mode == 2:
                         goalSquares = goal_squares(board)
                         options = {
-                                "bfs": lambda graph: graph.bfs(Node(board,goalSquares)),
-                                "dfs": lambda graph: graph.dfs(Node(board,goalSquares)),
-                                "ids": lambda graph: graph.ids(Node(board,goalSquares)),
-                                "greedy": lambda graph: graph.greedy(Node(board,goalSquares))
-                        
+                                "bfs": lambda graph: graph.bfs(Node(board,goalSquares,False)),
+                                "dfs": lambda graph: graph.dfs(Node(board,goalSquares,False)),
+                                "ids": lambda graph: graph.ids(Node(board,goalSquares,False)),
+                                "greedy": lambda graph: graph.informed_search(Node(board,goalSquares,False)),
+                                "a*": lambda graph: graph.informed_search(Node(board,goalSquares,True))
                         }
                         options["greedy"](Graph(is_solution, get_all_nodes, goalSquares))
                     elif mode == 1:
