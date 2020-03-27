@@ -124,22 +124,22 @@ class Graph(object):
 
             
     @staticmethod
-    def __bfs(node, queue, visited,_,__,___):
+    def __bfs(node, queue, visited, _, __, ___):
         queue.append(node)
         visited[node] = True
     
     @staticmethod
-    def __informed_search(node, queue, visited,_,__,___):
+    def __informed_search(node, queue, visited, _, __, ___):
         heapq.heappush(queue,node)
         visited[node] = True
 
     @staticmethod
-    def __dfs(node, queue, visited,_,__,___):
+    def __dfs(node, queue, visited, _, __, ___):
         queue.insert(0,node)
         visited[node] = True
 
     @staticmethod
-    def __ids(node, queue, visited, _,limit,n_tries,finished):
+    def __ids(node, queue, visited, limit, n_tries, finished):
         if limit == 0:
             queue.append(node)
         else:

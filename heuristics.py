@@ -71,7 +71,7 @@ def heuristic2(board,goal_squares):
         intersections = 0
     else:
         intersections /= len(expandables)
-        
+
     if intersections == 0:
         intersections = 4
     else:
