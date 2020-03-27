@@ -1,6 +1,6 @@
 from graph import Node, Graph
 from game import goal_squares,game
-from gameboards import GameBoard1,GameBoard2,GameBoard3,GameBoard4
+from boards import GameBoard1,GameBoard2,GameBoard3,GameBoard4
 from graph_functions import is_solution, get_all_nodes
 
 def main_menu():
@@ -100,11 +100,13 @@ def search_menu(mode, level):
                     if mode == 2:
                         goalSquares = goal_squares(board)
                         options = {
-                            "bfs": lambda graph: graph.bfs(Node(board)),
-                            "ids": lambda graph: graph.ids(Node(board)),
-                            "dfs": lambda graph: graph.dfs(Node(board))
+                                "bfs": lambda graph: graph.bfs(Node(board,goalSquares)),
+                                "dfs": lambda graph: graph.dfs(Node(board,goalSquares)),
+                                "ids": lambda graph: graph.ids(Node(board,goalSquares)),
+                                "greedy": lambda graph: graph.greedy(Node(board,goalSquares))
+                        
                         }
-                        options["ids"](Graph(is_solution, get_all_nodes, goalSquares))
+                        options["bfs"](Graph(is_solution, get_all_nodes, goalSquares))
                     elif mode == 1:
                         game(mode, board, option)
                     return True

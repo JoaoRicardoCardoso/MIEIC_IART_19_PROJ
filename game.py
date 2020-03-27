@@ -1,6 +1,6 @@
 import re
-import gameboards
-from game_interface import display_board
+import boards
+from interface import display_board
 from enum import Enum
 
 class Piece(Enum):

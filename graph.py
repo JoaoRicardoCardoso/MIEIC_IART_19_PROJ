@@ -2,15 +2,19 @@
 #https://stackoverflow.com/questions/19472530/representing-graphs-data-structure-in-python
 
 from collections import defaultdict
-from game_interface import display_board, print_board_2, print_board
+from interface import display_board, print_board_2, print_board
 from game import convert_direction
+from heuristics import *
+import heapq
 
 class Node(object):
     #constructor, stores the state it represents and the parent (none by default)
-    def __init__(self, state, parent = None, last_move = None):
+    def __init__(self, state, goal_squares, parent = None, last_move = None):
         self.__state = state
         self.__parent = parent
         self.__last_move = last_move
+        self.__goal_squares = goal_squares
+        self.heuristic = heuristic
     
     def get_state(self):
         return self.__state
@@ -23,6 +27,9 @@ class Node(object):
 
     def get_last_move(self):
         return self.__last_move
+    
+    def __lt__(self, other):
+        return self.heuristic(self.__state,self.__goal_squares) < self.heuristic(other.get_state(),self.__goal_squares)
 
 
 #graph class for directed graphs
@@ -59,6 +66,7 @@ class Graph(object):
 
         visited = defaultdict(bool)
         queue = [start]
+        #heapq.heapify(queue)
         visited[start] = True
         cost = 0
         finished = False
@@ -67,10 +75,10 @@ class Graph(object):
             finished = True
             self.print_path(start)
         while not finished:
-            
-            node = queue.pop(0)
 
-            for adjacent in self.add_edges(node):
+            node = queue.pop(0)
+            #node = heapq.heappop(queue)
+            for adjacent in self.add_edges(node,self.goal_squares):
                 self.add_edge(node,adjacent)
         
             for adjacent in self.graph[node]:
@@ -94,6 +102,11 @@ class Graph(object):
     @staticmethod
     def __bfs(node, queue, visited, _,__,___,_____):
         queue.append(node)
+        visited[node] = True
+    
+    @staticmethod
+    def __greedy(node, queue, visited, _):
+        heapq.heappush(queue,node)
         visited[node] = True
 
     @staticmethod
@@ -122,5 +135,15 @@ class Graph(object):
     def bfs(self,start):
         self.__run_graph(start, self.__bfs)
 
+    def greedy(self,start):
+        self.__run_graph(start, self.__greedy)
 
-#############################################################
+    def __print_path(self, end):
+        path = [end]
+        parent = end.get_parent()
+        while(parent is not None):
+            path.insert(0,parent)
+            parent = parent.get_parent()
+        for node in path:
+            print_board(node.get_state())
+

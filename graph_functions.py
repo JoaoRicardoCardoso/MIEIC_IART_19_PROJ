@@ -23,7 +23,8 @@ def get_all_moves(newstates, board, row, col):
     newstates.append((move_left,(row,col,Direction.left.value)))
     newstates.append((move_right,(row,col,Direction.right.value)))
 
-def get_all_nodes(node):
+def get_all_nodes(node,goal_squares):
+
     board = node.get_state()
 
     nodes = []
@@ -36,27 +37,7 @@ def get_all_nodes(node):
 
     #create node for each board possible (each state)
     for board_state in newstates:
-        nodes.append(Node(board_state[0],None,board_state[1]))
+        nodes.append(Node(board_state[0],goal_squares,None,board_state[1]))
     
     return nodes
 
-
-#TESTING
-########################################################
-# GameBoard2 = [[0, 0, 0, 0, 0, 0, 0, 0],
-#              [0, 0, 0, 0, 0, 0, 0, 0],
-#              [0, 0, 0, 0, 0, 2, 0, 0],
-#              [0, 0, 0, 0, 0, 0, 1, 0],
-#              [0, 0, 1, 0, 0, 0, 0, 0],
-#              [0, 0, 0, 0, 0, 0, 3, 0],
-#              [0, 0, -2, 0, 0, 0, 0, 0],
-#              [0, 0, 0, 0, 0, 0, 0, 0]]
-
-
-# GoalSquares = goal_squares(GameBoard2)
-
-# options = {
-#     "bfs": lambda graph: graph.bfs(Node(GameBoard2))
-# }
-
-# options["bfs"](Graph(is_solution,get_all_nodes,GoalSquares))
