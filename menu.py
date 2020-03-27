@@ -104,7 +104,7 @@ def search_menu(mode, level):
                             "ids": lambda graph: graph.ids(Node(board)),
                             "dfs": lambda graph: graph.dfs(Node(board))
                         }
-                        options["bfs"](Graph(is_solution, get_all_nodes, goalSquares))
+                        options["ids"](Graph(is_solution, get_all_nodes, goalSquares))
                     elif mode == 1:
                         game(mode, board, option)
                     return True

@@ -53,12 +53,16 @@ class Graph(object):
     #given the start node and searching algorithm function
     def __run_graph(self, start, algorithm):
         
-        limit = 2
+        initial_limit = 2
+        limit = initial_limit
+        n_tries = 0
+
         visited = defaultdict(bool)
         queue = [start]
         visited[start] = True
         cost = 0
         finished = False
+
         if self.is_solution(start,self.goal_squares):
             finished = True
             self.print_path(start)
@@ -76,27 +80,36 @@ class Graph(object):
                     self.print_path(adjacent)
                 elif not visited[adjacent]:
                     adjacent.set_parent(node)
-                    algorithm(adjacent,queue,visited,cost,limit)
+                    algorithm(adjacent,queue,visited,cost,limit,n_tries,finished)
             cost +=1
-            limit -=1
+
+            if limit <= 0:
+                limit = initial_limit
+                n_tries +=1
+            else:
+                limit -=1
+               
 
             
     @staticmethod
-    def __bfs(node, queue, visited, _,__):
+    def __bfs(node, queue, visited, _,__,___,_____):
         queue.append(node)
         visited[node] = True
 
     @staticmethod
-    def __dfs(node, queue, visited, _,__):
+    def __dfs(node, queue, visited, _,__,___,_____):
         queue.insert(0,node)
         visited[node] = True
 
     @staticmethod
-    def __ids(node, queue, visited, _,limit):
+    def __ids(node, queue, visited, _,limit,n_tries,finished):
         if limit == 0:
             queue.append(node)
         else:
             queue.insert(0,node)
+
+        if n_tries > 10: 
+            finished = True
 
         visited[node] = True
         
