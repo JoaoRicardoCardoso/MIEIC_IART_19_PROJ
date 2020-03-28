@@ -37,7 +37,7 @@ def get_all_nodes(node,goal_squares):
 
     #create node for each board possible (each state)
     for board_state in newstates:
-        nodes.append(Node(board_state[0],goal_squares,None,board_state[1]))
+        nodes.append(Node(board_state[0],goal_squares,node.get_uses_cost(),None,board_state[1]))
     
     return nodes
 
