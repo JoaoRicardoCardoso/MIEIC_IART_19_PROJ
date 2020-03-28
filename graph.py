@@ -66,7 +66,7 @@ class Graph(object):
 
         visited = defaultdict(bool)
         queue = [start]
-        heapq.heapify(queue)
+        #heapq.heapify(queue)
         visited[start] = True
         cost = 0
         finished = False
@@ -76,8 +76,12 @@ class Graph(object):
             self.print_path(start)
         while not finished:
 
-            # node = queue.pop(0)
-            node = heapq.heappop(queue)
+            node = queue.pop(0)
+            display_board(node.get_state(),len(node.get_state()))
+            print("Cost: " + str(node.get_cost()) + "  " + "Heuristic: " + str(node.heuristic(node.get_state(),node.get_goal_squares())))
+            print("Total node cost: " + str(node.get_cost() + node.heuristic(node.get_state(),node.get_goal_squares())))
+    
+            input()
             for adjacent in self.add_edges(node,self.goal_squares):
                 self.add_edge(node,adjacent)
         
