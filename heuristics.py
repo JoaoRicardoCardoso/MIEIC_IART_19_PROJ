@@ -17,6 +17,7 @@ def distance_to_goals(goal_squares,row,col):
         distance = distance + m.sqrt((row-goal[0])*(row-goal[0])+(col-goal[1])*(col-goal[1]))
     return distance
 
+#minimize the distance from the farthest expandable square to the goal square
 def heuristic1(board,goal_squares):
     expandables = get_expandables(board)
     distances = []

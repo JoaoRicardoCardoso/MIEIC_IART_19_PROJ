@@ -7,7 +7,7 @@ import heapq
 # TESTING
 #######################################################
 
-test_board = GameBoard3
+test_board = GameBoard1
 goal_squares_test = goal_squares(test_board)
 
 options = {
@@ -34,7 +34,7 @@ end = time.time()
 print("ids time: " + str(end - start))
 
 start = time.time()
-options["greedy"](Graph(is_solution,get_all_nodes,goal_squares_test,False))
+options["greedy"](Graph(is_solution,get_all_nodes,goal_squares_test,True))
 end = time.time()
 print("greedy time: " + str(end - start))
 
