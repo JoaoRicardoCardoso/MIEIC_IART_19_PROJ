@@ -3,6 +3,7 @@ from game import goal_squares,game
 from boards import GameBoard1,GameBoard2,GameBoard3,GameBoard4
 from graph_functions import is_solution, get_all_nodes
 import time
+import xlsxwriter
 
 def main_menu():
     while True:
@@ -107,10 +108,15 @@ def search_menu(mode, level):
                                 "greedy": lambda graph: graph.informed_search(Node(board,goalSquares,False)),
                                 "a*": lambda graph: graph.informed_search(Node(board,goalSquares,True))
                         }
+                        workbook = xlsxwriter.Workbook('hello.xlsx')
+                        worksheet = workbook.add_worksheet()
+                        worksheet.write('A1', 'Hello world')
                         start = time.time()
                         options["ids"](Graph(is_solution, get_all_nodes, goalSquares,False))
                         end = time.time()
                         print("greedy time: " + str(end - start))
+                        worksheet.write(1, 1, end - start)
+                        workbook.close()
                     elif mode == 1:
                         game(mode, board, option)
                     return True
