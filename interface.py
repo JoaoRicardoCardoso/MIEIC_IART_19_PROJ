@@ -10,7 +10,7 @@ def delete_board_screen(n):
 def print_move(column,row,direction):
     print("Coordenates: (" + str(column) + "," + str(row) + ")" + " Direction: " + direction)
 
-def print_board_2(board,column,row,direction):
+def print_final(board,column,row,direction):
     print_move(column,row,direction)
     display_board(board,len(board))
     time.sleep(2)

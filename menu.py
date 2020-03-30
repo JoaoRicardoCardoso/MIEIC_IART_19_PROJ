@@ -106,7 +106,7 @@ def search_menu(mode, level):
                                 "greedy": lambda graph: graph.informed_search(Node(board,goalSquares,False)),
                                 "a*": lambda graph: graph.informed_search(Node(board,goalSquares,True))
                         }
-                        options["ids"](Graph(is_solution, get_all_nodes, goalSquares))
+                        options["ids"](Graph(is_solution, get_all_nodes, goalSquares,False))
                     elif mode == 1:
                         game(mode, board, option)
                     return True
