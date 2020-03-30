@@ -14,7 +14,7 @@ class Node(object):
         self.__parent = parent
         self.__last_move = last_move
         self.__goal_squares = goal_squares
-        self.heuristic = heuristic
+        self.__heuristic = heuristic(self.__state,self.__goal_squares)
         self.__uses_cost = uses_cost
     
     def get_state(self):
@@ -34,6 +34,9 @@ class Node(object):
     
     def get_uses_cost(self):
         return self.__uses_cost
+    
+    def get_heuristic(self):
+        return self.__heuristic
 
     def get_cost(self):
         if self.__parent == None:
@@ -43,11 +46,9 @@ class Node(object):
     
     def __lt__(self, other):
         if self.__uses_cost:
-            return (self.heuristic(self.__state,self.__goal_squares)+self.get_cost()) < (other.heuristic(other.get_state(),self.__goal_squares)+other.get_cost())
+            return (self.__heuristic + self.get_cost()) < (other.get_heuristic() + other.get_cost())
         else:
-            return (self.heuristic(self.__state,self.__goal_squares)) < (other.heuristic(other.get_state(),self.__goal_squares))
-        #return (self.get_cost()) < (other.get_cost())
-
+            return (self.__heuristic) < (other.get_heuristic())
 
 #graph class for directed graphs
 class Graph(object):
