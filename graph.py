@@ -113,7 +113,7 @@ class Graph(object):
                 if self.is_solution(adjacent,self.goal_squares):
                     adjacent.set_parent(node)
                     finished = True
-                    self.print_path(adjacent)
+                    #self.print_path(adjacent)
                     return True
                 elif not visited[adjacent]:
                     adjacent.set_parent(node)

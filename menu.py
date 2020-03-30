@@ -2,6 +2,7 @@ from graph import Node, Graph
 from game import goal_squares,game
 from boards import GameBoard1,GameBoard2,GameBoard3,GameBoard4
 from graph_functions import is_solution, get_all_nodes
+import time
 
 def main_menu():
     while True:
@@ -106,7 +107,10 @@ def search_menu(mode, level):
                                 "greedy": lambda graph: graph.informed_search(Node(board,goalSquares,False)),
                                 "a*": lambda graph: graph.informed_search(Node(board,goalSquares,True))
                         }
+                        start = time.time()
                         options["ids"](Graph(is_solution, get_all_nodes, goalSquares,False))
+                        end = time.time()
+                        print("greedy time: " + str(end - start))
                     elif mode == 1:
                         game(mode, board, option)
                     return True
