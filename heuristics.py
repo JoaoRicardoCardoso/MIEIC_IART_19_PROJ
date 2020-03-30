@@ -1,15 +1,6 @@
 import math as m
 import copy
-
-#returns list with all expandable squares
-def get_expandables(board):
-    expandables = []
-    for row in range(len(board)):
-        for col in range(len(board[0])):
-            value = board[row][col]
-            if value > 0:
-                expandables.append((row,col,value))
-    return expandables
+from game import get_expandables
 
 def distance_to_goals(goal_squares,row,col):
     distance = 0.0
@@ -79,4 +70,4 @@ def heuristic2(board,goal_squares):
         intersections = 1/intersections + 1
     return intersections
 
-heuristic = heuristic2
+heuristic = heuristic1

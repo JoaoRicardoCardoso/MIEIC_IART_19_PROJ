@@ -7,21 +7,21 @@ def is_solution(node, goal_squares):
     return verify_game_state(state,goal_squares)
 
 #get all newstates resultant from moving in every direction
-def get_all_moves(newstates, board, row, col):
+def get_all_moves(newstates, board, expandable):
     move_top = copy.deepcopy(board)
     move_bottom = copy.deepcopy(board)
     move_left = copy.deepcopy(board)
     move_right = copy.deepcopy(board)
 
-    execute_move(move_top,(row,col,Direction.top.value))
-    execute_move(move_bottom,(row,col,Direction.bottom.value))
-    execute_move(move_left,(row,col,Direction.left.value))
-    execute_move(move_right,(row,col,Direction.right.value))
+    execute_move(move_top,(expandable[0],expandable[1],Direction.top.value))
+    execute_move(move_bottom,(expandable[0],expandable[1],Direction.bottom.value))
+    execute_move(move_left,(expandable[0],expandable[1],Direction.left.value))
+    execute_move(move_right,(expandable[0],expandable[1],Direction.right.value))
     
-    newstates.append((move_top,(row,col,Direction.top.value)))
-    newstates.append((move_bottom,(row,col,Direction.bottom.value)))
-    newstates.append((move_left,(row,col,Direction.left.value)))
-    newstates.append((move_right,(row,col,Direction.right.value)))
+    newstates.append((move_top,(expandable[0],expandable[1],Direction.top.value,expandable[2])))
+    newstates.append((move_bottom,(expandable[0],expandable[1],Direction.bottom.value,expandable[2])))
+    newstates.append((move_left,(expandable[0],expandable[1],Direction.left.value,expandable[2])))
+    newstates.append((move_right,(expandable[0],expandable[1],Direction.right.value,expandable[2])))
 
 def get_all_nodes(node,goal_squares):
 
@@ -29,15 +29,15 @@ def get_all_nodes(node,goal_squares):
 
     nodes = []
     #from the current board, retrieve all newstates possible from there
-    newstates = []
-    for i in range(len(board)):
-        for j in range(len(board[0])):
-            if board[i][j] > 0:
-                get_all_moves(newstates,board,i,j)
+    
 
-    #create node for each board possible (each state)
-    for board_state in newstates:
-        nodes.append(Node(board_state[0],goal_squares,node.get_uses_cost(),None,board_state[1]))
+    for expandable in node.expandables:
+        newstates = []
+        get_all_moves(newstates,board,expandable)
+        new_expandables = copy.deepcopy(node.expandables)
+        new_expandables.remove(expandable)
+        for newstate in newstates:
+            nodes.append(Node(newstate[0],goal_squares,node.get_uses_cost(),new_expandables,None,newstate[1]))
     
     return nodes
 

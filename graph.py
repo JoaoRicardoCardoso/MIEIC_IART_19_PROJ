@@ -9,13 +9,14 @@ import heapq
 
 class Node(object):
     #constructor, stores the state it represents and the parent (none by default)
-    def __init__(self, state, goal_squares, uses_cost, parent = None, last_move = None):
+    def __init__(self, state, goal_squares, uses_cost,expandables, parent = None, last_move = None):
         self.__state = state
         self.__parent = parent
         self.__last_move = last_move
         self.__goal_squares = goal_squares
         self.__heuristic = heuristic(self.__state,self.__goal_squares)
         self.__uses_cost = uses_cost
+        self.expandables = expandables
     
     def get_state(self):
         return self.__state
@@ -81,7 +82,7 @@ class Graph(object):
         initial_limit = 2
         limit = initial_limit
         n_tries = 0
-
+        count = 0
         visited = defaultdict(bool)
         queue = [start]
         if self.informed:
@@ -92,36 +93,43 @@ class Graph(object):
         if self.is_solution(start,self.goal_squares):
             finished = True
             self.print_path(start)
+
         while not finished:
 
+            count += 1
             if self.informed:
                 node = heapq.heappop(queue)
             else:
                 node = queue.pop(0)
             
+            #testing
             #display_board(node.get_state(),len(node.get_state()))
-            #print("Cost: " + str(node.get_cost()) + "  " + "Heuristic: " + str(node.heuristic(node.get_state(),node.get_goal_squares())))
-            #print("Total node cost: " + str(node.get_cost() + node.heuristic(node.get_state(),node.get_goal_squares())))
+            #print("Cost: " + str(node.get_cost()) + "  " + "Heuristic: " + str(node.get_heuristic()))
+            #print("Total node cost: " + str(node.get_cost() + node.get_heuristic()))
             #input()
+            
             for adjacent in self.add_edges(node,self.goal_squares):
                 self.add_edge(node,adjacent)
-        
+
+
             for adjacent in self.graph[node]:
                 if self.is_solution(adjacent,self.goal_squares):
                     adjacent.set_parent(node)
                     finished = True
                     #self.print_path(adjacent)
                 elif not visited[adjacent]:
+
                     adjacent.set_parent(node)
                     algorithm(adjacent,queue,visited,limit,n_tries,finished)
+
 
             if limit <= 0:
                 limit = initial_limit
                 n_tries +=1
             else:
                 limit -=1
-               
 
+        print("Nodes processed: " + str(count))
             
     @staticmethod
     def __bfs(node, queue, visited, _, __, ___):
