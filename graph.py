@@ -22,7 +22,7 @@ class Node(object):
         self.__goal_squares = goal_squares
         self.__heuristic = heuristic(self.__state,self.__goal_squares)
         self.__uses_cost = uses_cost
-        self.__edge_cost = cost1(goal_squares,last_move)
+        self.__edge_cost = cost1(goal_squares,expandables,state,last_move)
         self.expandables = expandables
     
     def get_state(self):

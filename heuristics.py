@@ -3,14 +3,42 @@ import copy
 from game import Direction, Piece, get_expandables
 import heapq
 
-def cost1(_,last_move):
+def useless_move(board,move,expandables,goal_squares):
+    row = move[0]
+    col = move[1]
+    direction = move[2]
+    value = move[3]
+
+    if direction == Direction.top.value:
+        for square in expandables+goal_squares:
+            if square[0] < row:
+                return False
+    elif direction == Direction.bottom.value:
+        for square in expandables+goal_squares:
+            if square[0] > row:
+                return False
+    elif direction == Direction.left.value:
+        for square in expandables+goal_squares:
+            if square[0] < col:
+                return False
+    elif direction == Direction.right.value:
+        for square in expandables+goal_squares:
+            if square[0] > col:
+                return False
+
+    return True
+
+def cost1(_,__,___,last_move):
     if last_move == None:
         return 0
     else:
         return 1
-def cost2(goal_squares,last_move):
+def cost2(goal_squares,expandables,board,last_move):
     if last_move == None:
         return 0
+
+    if useless_move(board,last_move,expandables,goal_squares):
+        return 20
         
     row = last_move[0]
     col = last_move[1]
