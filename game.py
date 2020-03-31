@@ -205,13 +205,15 @@ def get_expandables(board):
 
 def game(board):
     goals = goal_squares(board)
-    while True:
+    while len(get_expandables(board)) > 0:
         display_board(board,len(board[0]))
         move = read_move()
         if validate_move(board,move):
             execute_move(board, move)
             if verify_game_state(board,goals):
-                break
+                return True
+    display_board(board,len(board[0]))
+    return False
 
 def read_move():
     while True:

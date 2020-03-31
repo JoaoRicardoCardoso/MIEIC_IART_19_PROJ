@@ -31,11 +31,12 @@ def level_menu(mode):
     while True:
         print("\n----------Level Selection----------\n")
         print("Level selection:")
-        print("1- Level 1")
-        print("2- Level 2")
-        print("3- Level 3")
-        print("4- Back")
-        print("5- Exit\n")
+        print("1 - Level 1")
+        print("2 - Level 2")
+        print("3 - Level 3")
+        print("4 - Level 4")
+        print("5 - Back")
+        print("6 - Exit\n")
 
         try:
             option = input("Choose an option: ")
@@ -44,15 +45,18 @@ def level_menu(mode):
             print("Invalid input. Please select a valid option.")
             continue
         
-        if option >=1 and option <= 5:
-            if option == 4:
+        if option >=1 and option <= 6:
+            if option == 5:
                 return False
-            elif option == 5:
+            elif option == 6:
                 return True
             else:
                 board = switch_level(option)
                 if mode == 1:
-                    game(board)
+                    if game(board):
+                        print("\nYou WON!!!")
+                    else:
+                        print("\nGAME OVER. Next time you'll do better. I hope.")
                 else:
                     search_menu(board)
                 return True
@@ -63,17 +67,18 @@ def switch_level(argument):
     switcher = {
         1: GameBoard1,
         2: GameBoard2,
-        3: GameBoard4
+        3: GameBoard3,
+        4: GameBoard4
     }
     return switcher.get(argument)
 
 def switch_search_method(option,board,goalSquares):
     expandables = get_expandables(board)
     options = {
-        1: lambda graph: graph.bfs(Node(board,goalSquares,False,expandables)),
-        2: lambda graph: graph.dfs(Node(board,goalSquares,False,expandables)),
-        3: lambda graph: graph.informed_search(Node(board,goalSquares,False,expandables)),
-        4: lambda graph: graph.informed_search(Node(board,goalSquares,True,expandables))
+        1: lambda graph: graph.bfs(Node(board,goalSquares,False,False,expandables)),
+        2: lambda graph: graph.dfs(Node(board,goalSquares,False,False,expandables)),
+        3: lambda graph: graph.informed_search(Node(board,goalSquares,False,True,expandables)),
+        4: lambda graph: graph.informed_search(Node(board,goalSquares,True,True,expandables))
     }
     return options.get(option)
 
@@ -105,7 +110,7 @@ def search_menu(board):
                     start = time.time()
                     selected(Graph(is_solution, get_all_nodes, goalSquares,False))
                     end = time.time()
-                    print("Execution time: " + str(end - start))
+                    print("Execution time: " + str(round(end - start,5)) + " seconds ")
                     return True
         else:
             print("Invalid input. Please select a valid option.")

@@ -88,10 +88,14 @@ class Graph(object):
         while(parent is not None):
             path.insert(0,parent)
             parent = parent.get_parent()
-        for node in path:
-            last_move = node.get_last_move()
-            if last_move != None:
-                print_final(node.get_state(),last_move[0],last_move[1],convert_direction(last_move[2]))
+        
+        for i in range(len(path)):
+            last_move = path[i].get_last_move()
+            if last_move is None:
+                display_board(path[i].get_state(),len(path[i].get_state())),print("\n")
+            else:
+                print_final(path[i].get_state(),last_move[0],last_move[1],convert_direction(last_move[2]),i == len(path)-1)
+            
             
     #function to iterate the graph and find a solution 
     #given the start node and searching algorithm function
