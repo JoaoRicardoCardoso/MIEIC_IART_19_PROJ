@@ -9,13 +9,14 @@ import heapq
 
 class Node(object):
     #constructor, stores the state it represents and the parent (none by default)
-    def __init__(self, state, goal_squares, uses_cost, parent = None, last_move = None):
+    def __init__(self, state, goal_squares, uses_cost,expandables, parent = None, last_move = None):
         self.__state = state
         self.__parent = parent
         self.__last_move = last_move
         self.__goal_squares = goal_squares
         self.__heuristic = heuristic(self.__state,self.__goal_squares)
         self.__uses_cost = uses_cost
+        self.expandables = expandables
     
     def get_state(self):
         return self.__state
@@ -92,14 +93,16 @@ class Graph(object):
             #self.print_path(start)
         while not finished:
 
+            count += 1
             if self.informed:
                 node = heapq.heappop(queue)
             else:
                 node = queue.pop(0)
             
+            #testing
             #display_board(node.get_state(),len(node.get_state()))
-            #print("Cost: " + str(node.get_cost()) + "  " + "Heuristic: " + str(node.heuristic(node.get_state(),node.get_goal_squares())))
-            #print("Total node cost: " + str(node.get_cost() + node.heuristic(node.get_state(),node.get_goal_squares())))
+            #print("Cost: " + str(node.get_cost()) + "  " + "Heuristic: " + str(node.get_heuristic()))
+            #print("Total node cost: " + str(node.get_cost() + node.get_heuristic()))
             #input()
             if limit <= 0:
                 return False
@@ -108,7 +111,8 @@ class Graph(object):
 
             for adjacent in self.add_edges(node,self.goal_squares):
                 self.add_edge(node,adjacent)
-        
+
+
             for adjacent in self.graph[node]:
                 if self.is_solution(adjacent,self.goal_squares):
                     adjacent.set_parent(node)
@@ -116,6 +120,7 @@ class Graph(object):
                     #self.print_path(adjacent)
                     return True
                 elif not visited[adjacent]:
+
                     adjacent.set_parent(node)
                     algorithm(adjacent,queue,visited,limit)
 

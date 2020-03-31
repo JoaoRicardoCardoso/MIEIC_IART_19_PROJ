@@ -193,6 +193,16 @@ def goal_squares(board):
 # print(str(goal_squares(GameBoard)))
 # needs more boards to test
 
+#returns list with all expandable squares
+def get_expandables(board):
+    expandables = []
+    for row in range(len(board)):
+        for col in range(len(board[0])):
+            value = board[row][col]
+            if value > 0:
+                expandables.append((row,col,value))
+    return expandables
+
 def game(mode,board,option):
     goals = goal_squares(board)
     while True:
