@@ -7,6 +7,12 @@ from game import convert_direction
 from heuristics import *
 import heapq
 
+count =0 
+
+def get_count():
+    global count 
+    return count
+
 class Node(object):
     #constructor, stores the state it represents and the parent (none by default)
     def __init__(self, state, goal_squares, uses_cost,expandables, parent = None, last_move = None):
@@ -79,8 +85,7 @@ class Graph(object):
     #function to iterate the graph and find a solution 
     #given the start node and searching algorithm function
     def __run_graph(self, start, algorithm,limit):
-        
-        
+        global count
         visited = defaultdict(bool)
         queue = [start]
         if self.informed:
@@ -93,7 +98,8 @@ class Graph(object):
             #self.print_path(start)
         while not finished:
 
-            count += 1
+           
+            count +=1
             if self.informed:
                 node = heapq.heappop(queue)
             else:
@@ -140,7 +146,7 @@ class Graph(object):
     def __dfs(node, queue, visited, _):
         queue.insert(0,node)
         visited[node] = True
-
+    
     def dfs(self,start):
         self.__run_graph(start, self.__dfs,0)
         
