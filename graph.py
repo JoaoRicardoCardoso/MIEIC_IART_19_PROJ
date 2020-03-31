@@ -89,7 +89,7 @@ class Graph(object):
 
         if self.is_solution(start,self.goal_squares):
             finished = True
-            self.print_path(start)
+            #self.print_path(start)
         while not finished:
 
             if self.informed:
@@ -137,7 +137,7 @@ class Graph(object):
         visited[node] = True
 
     def dfs(self,start):
-        self.__run_graph(start, self.__dfs,_)
+        self.__run_graph(start, self.__dfs,0)
         
     def ids(self,start):
         start_node = copy.deepcopy(start)
@@ -145,12 +145,11 @@ class Graph(object):
             if self.__run_graph(start_node, self.__dfs,x):
                 break
             start_node = copy.deepcopy(start)
-        print(x)
 
     def bfs(self,start):
-        self.__run_graph(start, self.__bfs,_)
+        self.__run_graph(start, self.__bfs,0)
 
     def informed_search(self,start):
-        self.__run_graph(start, self.__informed_search,_)
+        self.__run_graph(start, self.__informed_search,0)
 
 
