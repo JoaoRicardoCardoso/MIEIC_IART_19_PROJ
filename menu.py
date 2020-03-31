@@ -21,7 +21,7 @@ def main_menu():
             continue
         if option >= 1 and option <= 3:
             if option < 3:
-                return level_menu(option)
+                level_menu(option)
             else:
                 return
         else:
