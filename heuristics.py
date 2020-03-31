@@ -11,8 +11,7 @@ def cost1(_,last_move):
 def cost2(goal_squares,last_move):
     if last_move == None:
         return 0
-    else:
-        return 1
+        
     row = last_move[0]
     col = last_move[1]
     direction = last_move[2]
