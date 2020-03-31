@@ -203,7 +203,7 @@ def get_expandables(board):
                 expandables.append((row,col,value))
     return expandables
 
-def game(mode,board,option):
+def game(board):
     goals = goal_squares(board)
     while True:
         display_board(board,len(board[0]))
@@ -214,10 +214,8 @@ def game(mode,board,option):
                 break
 
 def read_move():
-
     while True:
-        moveaux = input(
-            "What's your play? (Row Column Direction:[L, R, T, B])")
+        moveaux = input("What's your play? (Row Column Direction:[L, R, T, B])")
         print(moveaux)
         arguments = moveaux.split()
 
@@ -228,7 +226,5 @@ def read_move():
             break
         else:
             print("Incorrect input...Try again \n")
-
-
     return create_move(arguments)
 

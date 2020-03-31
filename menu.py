@@ -1,69 +1,61 @@
 from graph import Node, Graph
-from game import goal_squares,game
+from game import goal_squares,game,get_expandables
 from boards import GameBoard1,GameBoard2,GameBoard3,GameBoard4
 from graph_functions import is_solution, get_all_nodes
 import time
-import xlsxwriter
+#import xlsxwriter
 
 def main_menu():
     while True:
-        print()
-        print("---------Zhed Solver---------")
-        print()
+        print("\n---------Zhed Solver---------\n")
         print("Mode selection:")
         print("1- Human")
         print("2- Computer")
-        print("3- Exit")
-        print()
+        print("3- Exit\n")
 
-        option = input("Choose an option: ")
-        if len(option) == 1:
-            if ord(option) >= 49 and ord(option) <= 51:
-                option = int(option)
-                if option == 3:
-                    return
-                if level_menu(option):
-                    return
+        try:
+            option = input("Choose an option: ")
+            option = int(option)
+        except ValueError:
+            print("Invalid input. Please select a valid option.")
+            continue
+        if option >= 1 and option <= 3:
+            if option < 3:
+                return level_menu(option)
             else:
-                print("Invalid input. Please select a valid option.")
+                return
         else:
             print("Invalid input. Please select a valid option.")
 
-
 def level_menu(mode):
     while True:
-        if mode == 1:
-            print()
-            print("----------Human Mode----------")
-            print()
-        elif mode == 2:
-            print()
-            print("---------Computer Mode---------")
-            print()
-
+        print("\n----------Level Selection----------\n")
         print("Level selection:")
         print("1- Level 1")
         print("2- Level 2")
         print("3- Level 3")
         print("4- Back")
-        print("5- Exit")
+        print("5- Exit\n")
 
-        option = input("Choose an option: ")
-        if len(option) == 1:
-            if ord(option) >= 49 and ord(option) <= 53:
-                option = int(option)
-                if option == 4:
-                    return False
-                elif option == 5:
-                    return True
-                if mode == 1:
-                    game(mode, option, -1)
-                    return True
-                elif mode == 2:
-                    if search_menu(mode, option):
-                        return True
+        try:
+            option = input("Choose an option: ")
+            option = int(option)
+        except ValueError:
+            print("Invalid input. Please select a valid option.")
+            continue
+        
+        if option >=1 and option <= 5:
+            if option == 4:
+                return False
+            elif option == 5:
+                return True
             else:
-                print("Invalid input. Please select a valid option.")
+                board = switch_level(option)
+                if mode == 1:
+                    game(board)
+                else:
+                    search_menu(board)
+                return True
         else:
             print("Invalid input. Please select a valid option.")
 
@@ -75,53 +67,47 @@ def switch_level(argument):
     }
     return switcher.get(argument)
 
-def search_menu(mode, level):
-    
-    board = switch_level(level)
+def switch_search_method(option,board,goalSquares):
+    expandables = get_expandables(board)
+    options = {
+        1: lambda graph: graph.bfs(Node(board,goalSquares,False,expandables)),
+        2: lambda graph: graph.dfs(Node(board,goalSquares,False,expandables)),
+        3: lambda graph: graph.informed_search(Node(board,goalSquares,False,expandables)),
+        4: lambda graph: graph.informed_search(Node(board,goalSquares,True,expandables))
+    }
+    return options.get(option)
 
-    while True:
-
-        print()
-        print("----------Computer Mode----------")
-        print()
+def search_menu(board):
+    while True:    
+        print("\n----------Computer Mode----------\n")
         print("Search type selection:")
-        print("1- Blind Search")
-        print("2- Heuristic Search")
-        print("3- Back")
-        print("4- Exit")
+        print("1 - Breadth First Search")
+        print("2 - Depth First Search")
+        print("3 - Greedy Search")
+        print("4 - A Star")
+        print("5 - Back")
+        print("6 - Exit\n")
 
-        option = input("Choose an option: ")
-        if len(option) == 1:
-            if ord(option) >= 49 and ord(option) <= 52:
-                option = int(option)
-                if option == 3:
+        try:
+            option = input("Choose an option: ")
+            option = int(option)
+        except ValueError:
+            print("Invalid input. Please select a valid option.")
+            continue
+        if option >= 1 and option <= 6:
+                if option == 5:
                     return False
-                elif option == 4:
+                elif option == 6:
                     return True
                 else:
-                    if mode == 2:
-                        goalSquares = goal_squares(board)
-                        options = {
-                                "bfs": lambda graph: graph.bfs(Node(board,goalSquares,False)),
-                                "dfs": lambda graph: graph.dfs(Node(board,goalSquares,False)),
-                                "greedy": lambda graph: graph.informed_search(Node(board,goalSquares,False)),
-                                "a*": lambda graph: graph.informed_search(Node(board,goalSquares,True))
-                        }
-                        workbook = xlsxwriter.Workbook('hello.xlsx')
-                        worksheet = workbook.add_worksheet()
-                        worksheet.write('A1', 'Hello world')
-                        start = time.time()
-                        options["ids"](Graph(is_solution, get_all_nodes, goalSquares,False))
-                        end = time.time()
-                        print("greedy time: " + str(end - start))
-                        worksheet.write(1, 1, end - start)
-                        workbook.close()
-                    elif mode == 1:
-                        game(mode, board, option)
+                    goalSquares = goal_squares(board)
+                    selected = switch_search_method(option,board,goalSquares)
+                    start = time.time()
+                    selected(Graph(is_solution, get_all_nodes, goalSquares,False))
+                    end = time.time()
+                    print("Execution time: " + str(end - start))
                     return True
-            else: 
-                print("Invalid input. Please select a valid option.")
         else:
-            print("Invalid input. Please select a valid option.")     
+            print("Invalid input. Please select a valid option.")
 
 main_menu()
