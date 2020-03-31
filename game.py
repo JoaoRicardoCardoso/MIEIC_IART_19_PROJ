@@ -38,7 +38,7 @@ def execute_move(board, move):
     column = move[1]
     direction = move[2]
     value = board[row][column]
-    if(value <= 0):
+    if(value <= Piece.empty.value):
         return
     board[row][column] = Piece.filled.value
     if(direction is Direction.top.value):
@@ -53,7 +53,7 @@ def execute_move(board, move):
 
 def execute_top(board, row, column, value):
     for i in range(row-1, -1, -1):
-        if(value == 0):
+        if(value == Piece.empty.value):
             return
         if(board[i][column] is Piece.empty.value
                 or board[i][column] is Piece.goal.value):
@@ -64,7 +64,7 @@ def execute_top(board, row, column, value):
 def execute_right(board, row, column, value):
     n_cols = len(board[row])
     for i in range(column+1, n_cols):
-        if(value == 0):
+        if(value == Piece.empty.value):
             return
         if(board[row][i] is Piece.empty.value
                 or board[row][i] is Piece.goal.value):
@@ -75,7 +75,7 @@ def execute_right(board, row, column, value):
 def execute_bottom(board, row, column, value):
     n_rows = len(board)
     for i in range(row+1, n_rows):
-        if(value == 0):
+        if(value == Piece.empty.value):
             return
         if(board[i][column] is Piece.empty.value
                 or board[i][column] is Piece.goal.value):
@@ -85,7 +85,7 @@ def execute_bottom(board, row, column, value):
 
 def execute_left(board, row, column, value):
     for i in range(column-1, -1, -1):
-        if(value == 0):
+        if(value == Piece.empty.value):
             return
         if(board[row][i] is Piece.empty.value
                 or board[row][i] is Piece.goal.value):
@@ -199,7 +199,7 @@ def get_expandables(board):
     for row in range(len(board)):
         for col in range(len(board[0])):
             value = board[row][col]
-            if value > 0:
+            if value > Piece.empty.value:
                 expandables.append((row,col,value))
     return expandables
 

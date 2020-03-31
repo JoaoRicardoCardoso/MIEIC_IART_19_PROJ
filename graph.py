@@ -22,6 +22,7 @@ class Node(object):
         self.__goal_squares = goal_squares
         self.__heuristic = heuristic(self.__state,self.__goal_squares)
         self.__uses_cost = uses_cost
+        self.__edge_cost = cost1(goal_squares,last_move)
         self.expandables = expandables
     
     def get_state(self):
@@ -49,7 +50,7 @@ class Node(object):
         if self.__parent == None:
             return 0
         else:
-            return self.__parent.get_cost()+1
+            return self.__parent.get_cost()+self.__edge_cost
     
     def __lt__(self, other):
         if self.__uses_cost:
