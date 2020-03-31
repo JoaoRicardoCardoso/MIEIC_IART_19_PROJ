@@ -2,10 +2,16 @@
 #https://stackoverflow.com/questions/19472530/representing-graphs-data-structure-in-python
 
 from collections import defaultdict
-from interface import display_board, print_board_2, print_board
+from interface import display_board, print_final, print_board
 from game import convert_direction
 from heuristics import *
 import heapq
+
+count =0 
+
+def get_count():
+    global count 
+    return count
 
 class Node(object):
     #constructor, stores the state it represents and the parent (none by default)
@@ -75,15 +81,12 @@ class Graph(object):
         for node in path:
             last_move = node.get_last_move()
             if last_move != None:
-                print_board_2(node.get_state(),last_move[0],last_move[1],convert_direction(last_move[2]))
+                print_final(node.get_state(),last_move[0],last_move[1],convert_direction(last_move[2]))
             
     #function to iterate the graph and find a solution 
     #given the start node and searching algorithm function
-    def __run_graph(self, start, algorithm):
-        initial_limit = 2
-        limit = initial_limit
-        n_tries = 0
-        count = 0
+    def __run_graph(self, start, algorithm,limit):
+        global count
         visited = defaultdict(bool)
         queue = [start]
         if self.informed:
@@ -93,22 +96,26 @@ class Graph(object):
 
         if self.is_solution(start,self.goal_squares):
             finished = True
-            self.print_path(start)
-
+            #self.print_path(start)
         while not finished:
 
-            count += 1
+           
+            count +=1
             if self.informed:
                 node = heapq.heappop(queue)
             else:
                 node = queue.pop(0)
             
             #testing
-            # display_board(node.get_state(),len(node.get_state()))
-            # print("Cost: " + str(node.get_cost()) + "  " + "Heuristic: " + str(node.get_heuristic()))
-            # print("Total node cost: " + str(node.get_cost() + node.get_heuristic()))
-            # input()
-            
+            #display_board(node.get_state(),len(node.get_state()))
+            #print("Cost: " + str(node.get_cost()) + "  " + "Heuristic: " + str(node.get_heuristic()))
+            #print("Total node cost: " + str(node.get_cost() + node.get_heuristic()))
+            #input()
+            if limit <= 0:
+                return False
+            else:
+                limit -=1
+
             for adjacent in self.add_edges(node,self.goal_squares):
                 self.add_edge(node,adjacent)
 
@@ -118,65 +125,43 @@ class Graph(object):
                     adjacent.set_parent(node)
                     finished = True
                     #self.print_path(adjacent)
+                    return True
                 elif not visited[adjacent]:
 
                     adjacent.set_parent(node)
-                    algorithm(adjacent,queue,visited,limit,n_tries,finished)
+                    algorithm(adjacent,queue,visited,limit)
 
-
-            if limit <= 0:
-                limit = initial_limit
-                n_tries +=1
-            else:
-                limit -=1
-
-        print("Nodes processed: " + str(count))
+           
             
     @staticmethod
-    def __bfs(node, queue, visited, _, __, ___):
+    def __bfs(node, queue, visited, _):
         queue.append(node)
         visited[node] = True
     
     @staticmethod
-    def __informed_search(node, queue, visited, _, __, ___):
+    def __informed_search(node, queue, visited, _):
         heapq.heappush(queue,node)
         visited[node] = True
 
     @staticmethod
-    def __dfs(node, queue, visited, _, __, ___):
+    def __dfs(node, queue, visited, _):
         queue.insert(0,node)
         visited[node] = True
-
-    @staticmethod
-    def __ids(node, queue, visited, limit, n_tries, finished):
-        if limit == 0:
-            queue.append(node)
-        else:
-            queue.insert(0,node)
-
-        if n_tries > 10: 
-            finished = True
-
-        visited[node] = True
-        
+    
     def dfs(self,start):
-        self.__run_graph(start, self.__dfs)
+        self.__run_graph(start, self.__dfs,0)
         
     def ids(self,start):
-        self.__run_graph(start, self.__ids)
+        start_node = copy.deepcopy(start)
+        for x in range(5000):
+            if self.__run_graph(start_node, self.__dfs,x):
+                break
+            start_node = copy.deepcopy(start)
 
     def bfs(self,start):
-        self.__run_graph(start, self.__bfs)
+        self.__run_graph(start, self.__bfs,0)
 
     def informed_search(self,start):
-        self.__run_graph(start, self.__informed_search)
+        self.__run_graph(start, self.__informed_search,0)
 
-    def __print_path(self, end):
-        path = [end]
-        parent = end.get_parent()
-        while(parent is not None):
-            path.insert(0,parent)
-            parent = parent.get_parent()
-        for node in path:
-            print_board(node.get_state())
 
