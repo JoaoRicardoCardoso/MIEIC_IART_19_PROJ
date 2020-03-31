@@ -85,7 +85,7 @@ class Graph(object):
             
     #function to iterate the graph and find a solution 
     #given the start node and searching algorithm function
-    def __run_graph(self, start, algorithm,limit):
+    def __run_graph(self, start, algorithm):
         global count
         visited = defaultdict(bool)
         queue = [start]
@@ -111,11 +111,7 @@ class Graph(object):
             #print("Cost: " + str(node.get_cost()) + "  " + "Heuristic: " + str(node.get_heuristic()))
             #print("Total node cost: " + str(node.get_cost() + node.get_heuristic()))
             #input()
-            if limit <= 0:
-                return False
-            else:
-                limit -=1
-
+           
             for adjacent in self.add_edges(node,self.goal_squares):
                 self.add_edge(node,adjacent)
 
@@ -129,39 +125,32 @@ class Graph(object):
                 elif not visited[adjacent]:
 
                     adjacent.set_parent(node)
-                    algorithm(adjacent,queue,visited,limit)
+                    algorithm(adjacent,queue,visited)
 
            
             
     @staticmethod
-    def __bfs(node, queue, visited, _):
+    def __bfs(node, queue, visited):
         queue.append(node)
         visited[node] = True
     
     @staticmethod
-    def __informed_search(node, queue, visited, _):
+    def __informed_search(node, queue, visited):
         heapq.heappush(queue,node)
         visited[node] = True
 
     @staticmethod
-    def __dfs(node, queue, visited, _):
+    def __dfs(node, queue, visited):
         queue.insert(0,node)
         visited[node] = True
     
     def dfs(self,start):
-        self.__run_graph(start, self.__dfs,0)
-        
-    def ids(self,start):
-        start_node = copy.deepcopy(start)
-        for x in range(5000):
-            if self.__run_graph(start_node, self.__dfs,x):
-                break
-            start_node = copy.deepcopy(start)
+        self.__run_graph(start, self.__dfs)
 
     def bfs(self,start):
-        self.__run_graph(start, self.__bfs,0)
+        self.__run_graph(start, self.__bfs)
 
     def informed_search(self,start):
-        self.__run_graph(start, self.__informed_search,0)
+        self.__run_graph(start, self.__informed_search)
 
 

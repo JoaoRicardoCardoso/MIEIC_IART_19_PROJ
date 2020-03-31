@@ -104,7 +104,6 @@ def search_menu(mode, level):
                         options = {
                                 "bfs": lambda graph: graph.bfs(Node(board,goalSquares,False)),
                                 "dfs": lambda graph: graph.dfs(Node(board,goalSquares,False)),
-                                "ids": lambda graph: graph.ids(Node(board,goalSquares,False)),
                                 "greedy": lambda graph: graph.informed_search(Node(board,goalSquares,False)),
                                 "a*": lambda graph: graph.informed_search(Node(board,goalSquares,True))
                         }

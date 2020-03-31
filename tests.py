@@ -8,7 +8,7 @@ import xlsxwriter
 # TESTING
 #######################################################
 
-test_board = GameBoard3
+test_board = GameBoard4
 goal_squares_test = goal_squares(test_board)
 
 options = {
@@ -45,13 +45,13 @@ options = {
 # print("a* time: " + str(end - start))
 
 
-workbook = xlsxwriter.Workbook('ids3.xlsx')
+workbook = xlsxwriter.Workbook('dfs4.xlsx')
 worksheet = workbook.add_worksheet()
 worksheet.write('D1', 'BFS')
 global count
 for x in range(1,20):
     start = time.time()
-    options["ids"](Graph(is_solution, get_all_nodes, goal_squares_test,False))
+    options["dfs"](Graph(is_solution, get_all_nodes, goal_squares_test,False))
     end = time.time()
     print("time: " + str(end - start))
     worksheet.write(x, 2, end - start)
