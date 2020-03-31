@@ -29,7 +29,6 @@ def get_all_nodes(node,goal_squares):
 
     nodes = []
     #from the current board, retrieve all newstates possible from there
-    
 
     for expandable in node.expandables:
         newstates = []

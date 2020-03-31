@@ -115,12 +115,6 @@ class Graph(object):
                 node = heapq.heappop(queue)
             else:
                 node = queue.pop(0)
-            
-            #testing
-            #display_board(node.get_state(),len(node.get_state()))
-            #print("Cost: " + str(node.get_cost()) + "  " + "Heuristic: " + str(node.get_heuristic()))
-            #print("Total node cost: " + str(node.get_cost() + node.get_heuristic()))
-            #input()
            
             for adjacent in self.add_edges(node,self.goal_squares):
                 self.add_edge(node,adjacent)

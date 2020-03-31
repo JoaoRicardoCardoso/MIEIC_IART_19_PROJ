@@ -28,11 +28,14 @@ def useless_move(board,move,expandables,goal_squares):
 
     return True
 
+#all operations cost 1
 def cost1(_,__,___,last_move):
     if last_move == None:
         return 0
     else:
         return 1
+
+#an operation costs more if it expandes a square away from all other squares
 def cost2(goal_squares,expandables,board,last_move):
     if last_move == None:
         return 0
@@ -230,5 +233,5 @@ def heuristic3(board,goal_squares):
     else:
         return 10
 
-heuristic = heuristic3
+heuristic = heuristic1
 cost = cost1
