@@ -39,7 +39,7 @@ def cost2(goal_squares,expandables,board,last_move):
 
     if useless_move(board,last_move,expandables,goal_squares):
         return 20
-        
+
     row = last_move[0]
     col = last_move[1]
     direction = last_move[2]
@@ -230,4 +230,5 @@ def heuristic3(board,goal_squares):
     else:
         return 10
 
-heuristic = heuristic1
+heuristic = heuristic3
+cost = cost1

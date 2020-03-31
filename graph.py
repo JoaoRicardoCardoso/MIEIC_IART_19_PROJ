@@ -15,14 +15,21 @@ def get_count():
 
 class Node(object):
     #constructor, stores the state it represents and the parent (none by default)
-    def __init__(self, state, goal_squares, uses_cost,expandables, parent = None, last_move = None):
+    def __init__(self, state, goal_squares, uses_cost,is_informed,expandables, parent = None, last_move = None):
         self.__state = state
         self.__parent = parent
         self.__last_move = last_move
         self.__goal_squares = goal_squares
-        self.__heuristic = heuristic(self.__state,self.__goal_squares)
         self.__uses_cost = uses_cost
-        self.__edge_cost = cost1(goal_squares,expandables,state,last_move)
+        self.__is_informed = is_informed
+        if is_informed:
+            self.__heuristic = heuristic(self.__state,self.__goal_squares)
+        else:
+            self.__heuristic = None
+        if uses_cost:
+            self.__edge_cost = cost(goal_squares,expandables,state,last_move)
+        else:
+            self.__edge_cost = None
         self.expandables = expandables
     
     def get_state(self):
@@ -42,6 +49,9 @@ class Node(object):
     
     def get_uses_cost(self):
         return self.__uses_cost
+    
+    def get_is_informed(self):
+        return self.__is_informed
     
     def get_heuristic(self):
         return self.__heuristic

@@ -37,7 +37,7 @@ def get_all_nodes(node,goal_squares):
         new_expandables = copy.deepcopy(node.expandables)
         new_expandables.remove(expandable)
         for newstate in newstates:
-            nodes.append(Node(newstate[0],goal_squares,node.get_uses_cost(),new_expandables,None,newstate[1]))
+            nodes.append(Node(newstate[0],goal_squares,node.get_uses_cost(),node.get_is_informed(),new_expandables,None,newstate[1]))
     
     return nodes
 

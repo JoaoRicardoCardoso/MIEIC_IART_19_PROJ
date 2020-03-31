@@ -12,11 +12,11 @@ test_board = GameBoard4
 goal_squares_test = goal_squares(test_board)
 
 options = {
-    "bfs": lambda graph: graph.bfs(Node(test_board,goal_squares_test,False,get_expandables(test_board))),
-    "dfs": lambda graph: graph.dfs(Node(test_board,goal_squares_test,False,get_expandables(test_board))),
-    "ids": lambda graph: graph.ids(Node(test_board,goal_squares_test,False,get_expandables(test_board))),
-    "greedy": lambda graph: graph.informed_search(Node(test_board,goal_squares_test,False,get_expandables(test_board))),
-    "a*": lambda graph: graph.informed_search(Node(test_board,goal_squares_test,True,get_expandables(test_board)))
+    "bfs": lambda graph: graph.bfs(Node(test_board,goal_squares_test,False,False,get_expandables(test_board))),
+    "dfs": lambda graph: graph.dfs(Node(test_board,goal_squares_test,False,False,get_expandables(test_board))),
+    "ids": lambda graph: graph.ids(Node(test_board,goal_squares_test,False,False,get_expandables(test_board))),
+    "greedy": lambda graph: graph.informed_search(Node(test_board,goal_squares_test,False,True,get_expandables(test_board))),
+    "a*": lambda graph: graph.informed_search(Node(test_board,goal_squares_test,True,True,get_expandables(test_board)))
 }
 
 # start = time.time()
