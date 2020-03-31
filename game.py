@@ -1,27 +1,7 @@
-from enum import Enum
 import re
-
-GameBoard = [[0, 0, 0, 0, 0, 0, 0, 0],
-             [0, 0, 0, 0, 0, 0, 0, 0],
-             [0, 0, 0, 0, -1, -1, 0, 0],
-             [0, 0, 0, -1, -1, -1, 0, 0],
-             [0, 0, 1, 0, 0, -1, 0, 0],
-             [0, 0, 0, 0, 0, -1, 3, 0],
-             [0, 0, -2, 0, 0, 0, 0, 0],
-             [0, 0, 0, 0, 0, 0, 0, 0]]
-
-GameBoard2 = [[0, 0, 0, 0, 0, 0, 0, 0],
-             [0, 0, 0, 0, 0, 0, 0, 0],
-             [0, 0, 0, 0, 1, 2, 0, 0],
-             [0, 0, 0, 0, 0, 0, 0, 0],
-             [0, 0, 1, 0, 0, 0, 0, 0],
-             [0, 0, 0, 0, 0, 0, 3, 0],
-             [0, 0, -2, 0, 0, 0, 0, 0],
-             [0, 0, 0, 0, 0, 0, 0, 0]]
-
-
-GoalSquares = [[6, 2]]
-
+import boards
+from interface import display_board
+from enum import Enum
 
 class Piece(Enum):
     empty = 0
@@ -34,21 +14,31 @@ class Direction(Enum):
     right = 1
     bottom = 2
     left = 3
+    
     @classmethod
     def is_direction(cls, dir):
         return dir in cls._value2member_map_
+   
+def convert_direction(dir):
+        if dir  == 0:
+            return "top"
+        elif dir ==1:
+            return "right"
+        elif dir == 2:
+            return "bottom"
+        elif dir ==3:
+            return "left"
 
 # -------------------------------------------------------------------
 # board - matrix of arrays
 # move - (row,column,direction)
-
 
 def execute_move(board, move):
     row = move[0]
     column = move[1]
     direction = move[2]
     value = board[row][column]
-    if(value <= 0):
+    if(value <= Piece.empty.value):
         return
     board[row][column] = Piece.filled.value
     if(direction is Direction.top.value):
@@ -63,7 +53,7 @@ def execute_move(board, move):
 
 def execute_top(board, row, column, value):
     for i in range(row-1, -1, -1):
-        if(value == 0):
+        if(value == Piece.empty.value):
             return
         if(board[i][column] is Piece.empty.value
                 or board[i][column] is Piece.goal.value):
@@ -74,7 +64,7 @@ def execute_top(board, row, column, value):
 def execute_right(board, row, column, value):
     n_cols = len(board[row])
     for i in range(column+1, n_cols):
-        if(value == 0):
+        if(value == Piece.empty.value):
             return
         if(board[row][i] is Piece.empty.value
                 or board[row][i] is Piece.goal.value):
@@ -85,7 +75,7 @@ def execute_right(board, row, column, value):
 def execute_bottom(board, row, column, value):
     n_rows = len(board)
     for i in range(row+1, n_rows):
-        if(value == 0):
+        if(value == Piece.empty.value):
             return
         if(board[i][column] is Piece.empty.value
                 or board[i][column] is Piece.goal.value):
@@ -95,7 +85,7 @@ def execute_bottom(board, row, column, value):
 
 def execute_left(board, row, column, value):
     for i in range(column-1, -1, -1):
-        if(value == 0):
+        if(value == Piece.empty.value):
             return
         if(board[row][i] is Piece.empty.value
                 or board[row][i] is Piece.goal.value):
@@ -108,31 +98,6 @@ def execute_left(board, row, column, value):
 # print_board(GameBoard)
 
 # -------------------------------------------------------------------
-
-
-def display_game(board,n):
-
-    coordenates = []
-    for x in range(0,n):
-        coordenates.append(x)
-    coordenates.append('')
-    print('\n')
-    print('                 Zhed Game    \n')
-
-    
-
-    row_format = "{:>4}" * (len(coordenates) + 1)
-    print(row_format.format("y|x", *coordenates))
-    print('   ------------------------------------')
-
-    coords = []
-    for x in coordenates:
-        coords.append(str(x) + ' |')
-
-    for value, row in zip(coords, board):
-        row2 = row + list('|')
-        print(row_format.format(value, *row2))
-        print('   ------------------------------------')
 
 
 def input_to_direction(value):
@@ -174,26 +139,6 @@ def verify_input(arguments):
     else:
         return False
 
-
-def read_move():
-
-    while True:
-        moveaux = input(
-            "What's your play? (Row Column Direction:[L, R, T, B])")
-        print(moveaux)
-        arguments = moveaux.split()
-
-        leng = len(arguments)
-        if leng == 3:
-            if verify_input(arguments):
-                break
-            break
-        else:
-            print("Incorrect input...Try again \n")
-
-
-    return create_move(arguments)
-# display_game()
 
 # -------------------------------------------------------------------
 
@@ -248,17 +193,42 @@ def goal_squares(board):
 # print(str(goal_squares(GameBoard)))
 # needs more boards to test
 
+#returns list with all expandable squares
+def get_expandables(board):
+    expandables = []
+    for row in range(len(board)):
+        for col in range(len(board[0])):
+            value = board[row][col]
+            if value > Piece.empty.value:
+                expandables.append((row,col,value))
+    return expandables
 
-def game(mode,level,option):
-    board =GameBoard2
+def game(mode,board,option):
     goals = goal_squares(board)
     while True:
-        display_game(board,len(board[0]))
+        display_board(board,len(board[0]))
         move = read_move()
-        #print(move)
         if validate_move(board,move):
             execute_move(board, move)
             if verify_game_state(board,goals):
                 break
 
+def read_move():
+
+    while True:
+        moveaux = input(
+            "What's your play? (Row Column Direction:[L, R, T, B])")
+        print(moveaux)
+        arguments = moveaux.split()
+
+        leng = len(arguments)
+        if leng == 3:
+            if verify_input(arguments):
+                break
+            break
+        else:
+            print("Incorrect input...Try again \n")
+
+
+    return create_move(arguments)
 

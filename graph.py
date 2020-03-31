@@ -2,14 +2,22 @@
 #https://stackoverflow.com/questions/19472530/representing-graphs-data-structure-in-python
 
 from collections import defaultdict
-from game import display_game
+from interface import display_board, print_board_2, print_board
+from game import convert_direction
+from heuristics import *
+import heapq
 
 class Node(object):
     #constructor, stores the state it represents and the parent (none by default)
-    def __init__(self, state, parent = None, last_move = None):
+    def __init__(self, state, goal_squares, uses_cost,expandables, parent = None, last_move = None):
         self.__state = state
         self.__parent = parent
         self.__last_move = last_move
+        self.__goal_squares = goal_squares
+        self.__heuristic = heuristic(self.__state,self.__goal_squares)
+        self.__uses_cost = uses_cost
+        self.__edge_cost = cost1(goal_squares,last_move)
+        self.expandables = expandables
     
     def get_state(self):
         return self.__state
@@ -23,56 +31,145 @@ class Node(object):
     def get_last_move(self):
         return self.__last_move
 
+    def get_goal_squares(self):
+        return self.__goal_squares
+    
+    def get_uses_cost(self):
+        return self.__uses_cost
+    
+    def get_heuristic(self):
+        return self.__heuristic
+
+    def get_cost(self):
+        if self.__parent == None:
+            return 0
+        else:
+            return self.__parent.get_cost()+self.__edge_cost
+    
+    def __lt__(self, other):
+        if self.__uses_cost:
+            return (self.__heuristic + self.get_cost()) < (other.get_heuristic() + other.get_cost())
+        else:
+            return (self.__heuristic) < (other.get_heuristic())
 
 #graph class for directed graphs
 class Graph(object):
     #constructor, stores the validation function and add edges function names
-    def __init__(self, is_solution, add_edges, goal_squares):
+    def __init__(self, is_solution, add_edges, goal_squares,informed):
         self.graph = defaultdict(set)
         self.is_solution = is_solution
         self.add_edges = add_edges
         self.goal_squares = goal_squares
+        self.informed = informed
 
     #function to add an edge from node1 to node2
     def add_edge(self, node1, node2):
         self.graph[node1].add(node2)
 
+    def print_path(self, end):
+        path = [end]
+        parent = end.get_parent()
+        while(parent is not None):
+            path.insert(0,parent)
+            parent = parent.get_parent()
+        for node in path:
+            last_move = node.get_last_move()
+            if last_move != None:
+                print_board_2(node.get_state(),last_move[0],last_move[1],convert_direction(last_move[2]))
+            
     #function to iterate the graph and find a solution 
     #given the start node and searching algorithm function
     def __run_graph(self, start, algorithm):
-        
+        initial_limit = 2
+        limit = initial_limit
+        n_tries = 0
+        count = 0
         visited = defaultdict(bool)
         queue = [start]
+        if self.informed:
+            heapq.heapify(queue)
         visited[start] = True
-        cost = 0
         finished = False
+
         if self.is_solution(start,self.goal_squares):
             finished = True
             self.print_path(start)
-        while not finished:
-            
-            node = queue.pop(0)
 
-            for adjacent in self.add_edges(node):
+        while not finished:
+
+            count += 1
+            if self.informed:
+                node = heapq.heappop(queue)
+            else:
+                node = queue.pop(0)
+            
+            #testing
+            # display_board(node.get_state(),len(node.get_state()))
+            # print("Cost: " + str(node.get_cost()) + "  " + "Heuristic: " + str(node.get_heuristic()))
+            # print("Total node cost: " + str(node.get_cost() + node.get_heuristic()))
+            # input()
+            
+            for adjacent in self.add_edges(node,self.goal_squares):
                 self.add_edge(node,adjacent)
-        
+
+
             for adjacent in self.graph[node]:
                 if self.is_solution(adjacent,self.goal_squares):
                     adjacent.set_parent(node)
                     finished = True
-                    self.__print_path(adjacent)
+                    #self.print_path(adjacent)
                 elif not visited[adjacent]:
-                    adjacent.set_parent(node)
-                    algorithm(adjacent,queue,visited,cost)
-            cost +=1
 
+                    adjacent.set_parent(node)
+                    algorithm(adjacent,queue,visited,limit,n_tries,finished)
+
+
+            if limit <= 0:
+                limit = initial_limit
+                n_tries +=1
+            else:
+                limit -=1
+
+        print("Nodes processed: " + str(count))
+            
     @staticmethod
-    def __bfs(node, queue, visited, _):
+    def __bfs(node, queue, visited, _, __, ___):
         queue.append(node)
         visited[node] = True
+    
+    @staticmethod
+    def __informed_search(node, queue, visited, _, __, ___):
+        heapq.heappush(queue,node)
+        visited[node] = True
+
+    @staticmethod
+    def __dfs(node, queue, visited, _, __, ___):
+        queue.insert(0,node)
+        visited[node] = True
+
+    @staticmethod
+    def __ids(node, queue, visited, limit, n_tries, finished):
+        if limit == 0:
+            queue.append(node)
+        else:
+            queue.insert(0,node)
+
+        if n_tries > 10: 
+            finished = True
+
+        visited[node] = True
+        
+    def dfs(self,start):
+        self.__run_graph(start, self.__dfs)
+        
+    def ids(self,start):
+        self.__run_graph(start, self.__ids)
 
     def bfs(self,start):
         self.__run_graph(start, self.__bfs)
+
+    def informed_search(self,start):
+        self.__run_graph(start, self.__informed_search)
 
     def __print_path(self, end):
         path = [end]
@@ -83,15 +180,3 @@ class Graph(object):
         for node in path:
             print_board(node.get_state())
 
-#############################################################
-def print_board(board):     
-    for row in board:
-        print("|",end=" ")
-        for col in row:
-            if col < 0 or col > 10:
-                print(col, end=" ")
-            else:
-                print(" " + str(col),end=" ")
-            print("|",end=" ")
-        print("")
-    print("\n")  
